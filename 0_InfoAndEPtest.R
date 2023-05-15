@@ -217,16 +217,16 @@ sentences$language <- detect_language(sentences$text, plain_text = TRUE)
 
 sum(nchar(sentences$text)) #515569 (~ 10$)
 
-start <- Sys.time()
-ep_sentence_test <-
-  gl_translate(
-    sentences$text,
-    target = "en",
-    format = "text",
-    source = "", # Should result in automatic language detection
-    model = "nmt")
-duration <- Sys.time() - start
-duration # ~ 8.2 mins for 3444 sentences (factor 8)
+# start <- Sys.time()
+# ep_sentence_test <-
+#   gl_translate(
+#     sentences$text,
+#     target = "en",
+#     format = "text",
+#     source = "", # Should result in automatic language detection
+#     model = "nmt")
+# duration <- Sys.time() - start
+# duration # ~ 8.2 mins for 3444 sentences (factor 8)
 
 # One request status error in there - "Request Status Code:  400"
 sum(is.na(ep_sentence_test$translatedText)) # 0, good! Bad request seem to get repeated ...
@@ -242,7 +242,12 @@ sum(sentences$gdetection != sentences$language, na.rm = T)/nrow(sentences) # 3.6
 # qualitatively the yugoslawian languages again and quite a few missing clds - so this should be significantly better!
 
 
-
+# Update May 15 2023 
+# (https://console.cloud.google.com/billing/01A249-CB11C7-6A7EEF?hl=de&project=translationtest-384920)
+# In total and at least one day later, Google billed 18,43 € (deducting 9,02 € monthly rebate)
+# Should have been (515569*2)+69+282 = 1031489 characters
+# Amounts to (1031489/1000000)*20 = 20.62$ ~ 18,97 €
+# => My initial cost calculations are roughly correct (if we can de-select already English sentences well beforehand)
 
 
 
