@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Christian Rauh">
+
+<title>ParlLawSpeech - Multilingualism in EP speeches</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="EP-languageDetection_files/libs/clipboard/clipboard.min.js"></script>
+<script src="EP-languageDetection_files/libs/quarto-html/quarto.js"></script>
+<script src="EP-languageDetection_files/libs/quarto-html/popper.min.js"></script>
+<script src="EP-languageDetection_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="EP-languageDetection_files/libs/quarto-html/anchor.min.js"></script>
+<link href="EP-languageDetection_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="EP-languageDetection_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="EP-languageDetection_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="EP-languageDetection_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="EP-languageDetection_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+<script src="EP-languageDetection_files/libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="EP-languageDetection_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#the-issue" id="toc-the-issue" class="nav-link active" data-scroll-target="#the-issue">The issue</a></li>
+  <li><a href="#a-mock-example" id="toc-a-mock-example" class="nav-link" data-scroll-target="#a-mock-example">A mock example</a></li>
+  <li><a href="#prepare-the-ep-corpus" id="toc-prepare-the-ep-corpus" class="nav-link" data-scroll-target="#prepare-the-ep-corpus">Prepare the EP corpus</a></li>
+  <li><a href="#multilingualism-across-speeches" id="toc-multilingualism-across-speeches" class="nav-link" data-scroll-target="#multilingualism-across-speeches">Multilingualism across speeches</a></li>
+  <li><a href="#multilingualism-within-individual-speeches" id="toc-multilingualism-within-individual-speeches" class="nav-link" data-scroll-target="#multilingualism-within-individual-speeches">Multilingualism within individual speeches</a></li>
+  <li><a href="#how-the-google-api-handles-multilingualism-in-speeches" id="toc-how-the-google-api-handles-multilingualism-in-speeches" class="nav-link" data-scroll-target="#how-the-google-api-handles-multilingualism-in-speeches">How the Google API handles multilingualism in speeches</a></li>
+  <li><a href="#what-to-do" id="toc-what-to-do" class="nav-link" data-scroll-target="#what-to-do">What to do?</a>
+  <ul>
+  <li><a href="#option-a---speech-level-auto-translation" id="toc-option-a---speech-level-auto-translation" class="nav-link" data-scroll-target="#option-a---speech-level-auto-translation">OPTION (A) - Speech level auto translation</a></li>
+  <li><a href="#option-b---sentence-level-auto-translation" id="toc-option-b---sentence-level-auto-translation" class="nav-link" data-scroll-target="#option-b---sentence-level-auto-translation">OPTION (B) - Sentence level auto translation</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">ParlLawSpeech - Multilingualism in EP speeches</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Christian Rauh </p>
+          </div>
+  </div>
+    
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">September 18, 2023</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<section id="the-issue" class="level2">
+<h2 class="anchored" data-anchor-id="the-issue">The issue</h2>
+<p>We want to (also) provide an auto-translated, all-English version of the EP speech corpus (as the EP itself has stopped official translations at some point). To this end we have secured funding in the <a href="https://www.opted.eu/" target="_blank">OPTED</a> context and built a corresponding access pipeline to the Google Cloud Translation API. To save money, <strong><em>we do not want to translate speeches that are already in English</em></strong>.</p>
+<p>But beyond variation of languages across speeches, <strong><em>multilingualism may also occur within EP speeches</em></strong>: speakers may switch languages within a given speech (and JS found examples even in speeches that were marked as officially translated). Such multilingualism could create problems in auto-translation (though we do not know for sure how the Google API deals with multilingual text)</p>
+<p>One way to handle that would be <strong><em>tokenzing speeches into sentences</em></strong> and then auto-translate each sentence separately. However, this also comes with <strong><em>costs</em></strong>:</p>
+<ul>
+<li><p>First neural network translation quality is know to decreases with less context.</p></li>
+<li><p>Second, splitting the more than 500k is computationally quite expensive, and generates lots of API traffic.</p></li>
+<li><p>Thirs, sentence tokenization is also not exact science and is much more error prone when it comes to data management and re-aggregation to the speech level.</p></li>
+</ul>
+<p>To take an informed decision on speech- vs.&nbsp;sentence-level translation before we pay Google, this document thus generates some insights on multilingulaism in the present ParlLawSpeech corpus of the 509.649 <em>EP speeches</em>.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Packages #####</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytext)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Language detection packages</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fastText)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cld2)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cld3)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(textcat)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(franc)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Rendering packages</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="a-mock-example" class="level2">
+<h2 class="anchored" data-anchor-id="a-mock-example">A mock example</h2>
+<p>To learn about language detection off- and online and to see how the API deals with multilingual text, I set up a mock example featuring different European languages (including rare and notoriously tough ones for automated handling of language).</p>
+<p>For offline language detection I consider Google’s compact language detectors versions 2 and 3 as well as Facebook’s fastText algorithm (using the smaller one of the two ready-made training data) here.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # Language detection proof-of-concept exercise ####</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># test &lt;- data.frame(text = c("This is an English text. Not much else is to say about this.",</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                             "Das ist ein deutscher Text. Mehr gibt es dazu nicht zu sagen.",</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#                             "Il s'agit d'un texte français. Il n'y a plus rien à dire à ce sujet.",</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#                             "Ez magyar szöveg. Erről nincs több mondanivaló.",</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#                             "Jedná se o český text. Víc k tomu není co říct.",</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#                             "Este é un texto galego. Non hai máis que dicir sobre iso.",</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#                             "Este es un texto en español. No hay nada más que decir al respecto.",</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#                             "Testun Cymraeg yw hwn. Nid oes dim mwy i'w ddweud am hynny.",</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#                             "Aquest és un text en català. No hi ha res més a dir sobre això.",</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#                             "Ovo je bosanski tekst. Nema više šta da se kaže o tome.",</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">#                             "Ovo je hrvatski tekst. O tome se nema više što reći.",</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">#                             "This is a mixed text. Manches darin ist in deutscher Sprache. Otras frases están nuevamente escritas en español. Et le français est également utilisé.",</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">#                             "Dieser Text enthält unterschiedliche Sprachen, wie ihr seht. Például magyarul mond valamit a beszélő. És hirtelen németül angolul: Now you are surprised!"),</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">#                    ecpected = c("english",</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 "german",</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 "french",</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 "hungarian",</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 "czech",</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 "galician",</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 "spanish",</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 "welsh",</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 "catalan",</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 "bosnian",</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 "croatian",</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 "mixed",</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 "mixed"))</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co"># # Textcat (n-gram based)</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co"># test$lang_textcat &lt;- textcat(test$text)</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="co"># # Google compact language detection</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co"># # In prior projects cld2 proofed more accurate for short texts ...</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co"># test$lang_cld2 &lt;- cld2::detect_language(test$text)</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="co"># test$lang_cld3 &lt;- cld3::detect_language(test$text)</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="co"># # Franc (not vectorised)</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="co"># test$lang_franc &lt;- NA </span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="co"># # test$prob_franc &lt;- NA </span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="co"># for (i in 1:nrow(test)){</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="co">#   test$lang_franc[i] &lt;- franc(test$text[i])</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="co">#   # test$prob_franc[i] &lt;- franc_all(test$text[i])[1,2]</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="co"># test$lang_franc[test$lang_franc == "sco"] &lt;- NA # undefined language code</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="co"># # fastText</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="co"># # Using the smaller pre-trained data set: https://fasttext.cc/docs/en/language-identification.html</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="co"># file_ftz = system.file("language_identification/lid.176.ftz", package = "fastText")</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="co"># # Extract most likely language</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="co"># # Firts element returns iso-codes, second elemnt would return probabilities</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a><span class="co"># test$lang_fastText &lt;- fastText::language_identification(input_obj = test$text,</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         pre_trained_language_model_path = file_ftz,</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         k = 1,</span></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         th = 0.0,</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         threads = 1,</span></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         verbose = TRUE)[[1]]</span></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a><span class="co"># test$prob_fastText &lt;- fastText::language_identification(input_obj = test$text,</span></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         pre_trained_language_model_path = file_ftz,</span></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         k = 1,</span></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         th = 0.0,</span></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         threads = 1,</span></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         verbose = TRUE)[[2]]</span></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a><span class="co"># # Key insights</span></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a><span class="co"># # Textcat is too limited with regard to languages</span></span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="co"># # cld is too bold for mixed languages (also if one looks into proportions)</span></span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a><span class="co"># # franc is annjoying because not vectorized and different isocodes ...</span></span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a><span class="co"># # fastText has good benchmarks </span></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="co"># # Run test translation and language detection with google api here!</span></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a><span class="co"># # Auto-translation with google</span></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a><span class="co"># library(googleLanguageR) </span></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="co"># gl_auth("./private/opted-wp5-translation-4abef9cc0428.json") # Key for OPTED money ...</span></span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a><span class="co"># nchar(paste(test$text, collapse = " ")) # 951</span></span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a><span class="co"># # test_translation &lt;-</span></span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a><span class="co"># #   gl_translate(</span></span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a><span class="co"># #     test$text,</span></span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a><span class="co"># #     target = "en",</span></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="co"># #     format = "text",</span></span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a><span class="co"># #     source = "", # automatic language detection</span></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a><span class="co"># #     model = "nmt")</span></span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a><span class="co"># translation &lt;- test_translation %&gt;% </span></span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a><span class="co">#   rename(lang_GoogleAPI = detectedSourceLanguage) %&gt;% </span></span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a><span class="co">#   select(lang_GoogleAPI, translatedText)</span></span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a><span class="co"># test &lt;-  cbind(test, translation)</span></span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a><span class="co"># write_rds(test,"./testdata/ProofOfConcept.rds")</span></span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"./testdata/ProofOfConcept.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Let’s have a look at the results:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>test <span class="sc">%&gt;%</span> <span class="fu">select</span>(text, translatedText, lang_GoogleAPI, lang_cld2, lang_cld3, lang_fastText, prob_fastText) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl</span>(<span class="at">align=</span><span class="fu">c</span>(<span class="st">'l'</span>, <span class="st">'l'</span>, <span class="st">'c'</span>,<span class="st">'c'</span>,<span class="st">'c'</span>,<span class="st">'c'</span>,<span class="st">'c'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_paper</span>(<span class="st">"hover"</span>, <span class="at">full_width =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="lightable-paper lightable-hover table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">text</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">translatedText</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">lang_GoogleAPI</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">lang_cld2</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">lang_cld3</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">lang_fastText</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">prob_fastText</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">This is an English text. Not much else is to say about this.</td>
+<td style="text-align: left;">This is an English text. Not much else is to say about this.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">0.978175</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Das ist ein deutscher Text. Mehr gibt es dazu nicht zu sagen.</td>
+<td style="text-align: left;">This is a German text. There's nothing more to say about that.</td>
+<td style="text-align: center;">de</td>
+<td style="text-align: center;">de</td>
+<td style="text-align: center;">de</td>
+<td style="text-align: center;">de</td>
+<td style="text-align: center;">0.999854</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Il s'agit d'un texte français. Il n'y a plus rien à dire à ce sujet.</td>
+<td style="text-align: left;">This is a French text. There is nothing more to say about this.</td>
+<td style="text-align: center;">fr</td>
+<td style="text-align: center;">fr</td>
+<td style="text-align: center;">fr</td>
+<td style="text-align: center;">fr</td>
+<td style="text-align: center;">0.989828</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ez magyar szöveg. Erről nincs több mondanivaló.</td>
+<td style="text-align: left;">This is a Hungarian text. There is nothing more to say about this.</td>
+<td style="text-align: center;">hu</td>
+<td style="text-align: center;">hu</td>
+<td style="text-align: center;">hu</td>
+<td style="text-align: center;">hu</td>
+<td style="text-align: center;">0.996823</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Jedná se o český text. Víc k tomu není co říct.</td>
+<td style="text-align: left;">This is a Czech text. There is nothing more to say about it.</td>
+<td style="text-align: center;">cs</td>
+<td style="text-align: center;">cs</td>
+<td style="text-align: center;">cs</td>
+<td style="text-align: center;">cs</td>
+<td style="text-align: center;">0.970411</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Este é un texto galego. Non hai máis que dicir sobre iso.</td>
+<td style="text-align: left;">This is a Galician text. Nothing more to say about it.</td>
+<td style="text-align: center;">gl</td>
+<td style="text-align: center;">gl</td>
+<td style="text-align: center;">gl</td>
+<td style="text-align: center;">gl</td>
+<td style="text-align: center;">0.963449</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Este es un texto en español. No hay nada más que decir al respecto.</td>
+<td style="text-align: left;">This is a text in Spanish. There is nothing more to say about it.</td>
+<td style="text-align: center;">es</td>
+<td style="text-align: center;">es</td>
+<td style="text-align: center;">es</td>
+<td style="text-align: center;">es</td>
+<td style="text-align: center;">0.988291</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Testun Cymraeg yw hwn. Nid oes dim mwy i'w ddweud am hynny.</td>
+<td style="text-align: left;">This is a Welsh text. There is nothing more to say about that.</td>
+<td style="text-align: center;">cy</td>
+<td style="text-align: center;">cy</td>
+<td style="text-align: center;">cy</td>
+<td style="text-align: center;">cy</td>
+<td style="text-align: center;">0.425104</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Aquest és un text en català. No hi ha res més a dir sobre això.</td>
+<td style="text-align: left;">This is a text in Catalan. Nothing more to say about it.</td>
+<td style="text-align: center;">ca</td>
+<td style="text-align: center;">ca</td>
+<td style="text-align: center;">ca</td>
+<td style="text-align: center;">ca</td>
+<td style="text-align: center;">0.981534</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ovo je bosanski tekst. Nema više šta da se kaže o tome.</td>
+<td style="text-align: left;">This is a Bosnian text. Nothing more to say about it.</td>
+<td style="text-align: center;">bs</td>
+<td style="text-align: center;">bs</td>
+<td style="text-align: center;">bs</td>
+<td style="text-align: center;">sr</td>
+<td style="text-align: center;">0.697407</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ovo je hrvatski tekst. O tome se nema više što reći.</td>
+<td style="text-align: left;">This is the Croatian text. There is nothing more to say about that.</td>
+<td style="text-align: center;">hr</td>
+<td style="text-align: center;">hr</td>
+<td style="text-align: center;">bs</td>
+<td style="text-align: center;">sh</td>
+<td style="text-align: center;">0.431880</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">This is a mixed text. Manches darin ist in deutscher Sprache. Otras frases están nuevamente escritas en español. Et le français est également utilisé.</td>
+<td style="text-align: left;">This is a mixed text. Manches darin is in German language. Other phrases are rewritten in Spanish. And French is also used.</td>
+<td style="text-align: center;">gn</td>
+<td style="text-align: center;">fr</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">fr</td>
+<td style="text-align: center;">0.573624</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dieser Text enthält unterschiedliche Sprachen, wie ihr seht. Például magyarul mond valamit a beszélő. És hirtelen németül angolul: Now you are surprised!</td>
+<td style="text-align: left;">This text contains different languages that you see. For example, the speaker says something in Hungarian. And suddenly in German in English: Now you are surprised!</td>
+<td style="text-align: center;">hu</td>
+<td style="text-align: center;">hu</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">hu</td>
+<td style="text-align: center;">0.575922</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p>&nbsp;</p>
+<p>The <strong><em>key insights</em></strong> here:</p>
+<ul>
+<li><p>On- and offline language detection algorithms are pretty consistent in this example.</p></li>
+<li><p>But this is not hard science, of course: The Bosnian, Croatian and Welsh examples warrant caution (note that fastText’s certainty is also notably lower in these cases)</p></li>
+<li><p>Most of the algorithms return a single language for multilingual text when forced to, but also with low levels of certainty</p></li>
+<li><p><strong><em>Importantly</em>, the Google API handles multilingual text at least partially<br>
+</strong>(n.b.: I have not specified a source language when calling the API above)</p></li>
+</ul>
+<p>&nbsp;</p>
+</section>
+<section id="prepare-the-ep-corpus" class="level2">
+<h2 class="anchored" data-anchor-id="prepare-the-ep-corpus">Prepare the EP corpus</h2>
+<p>After receiving the green light from LH and JS I’m using the Dropbox Version of September 15 here, adding a unique speech id across the full corpus that I will rely on for the final translation as well.</p>
+<p>I keep a copy of this corpus source and will only append translated data later on. This way we can distinguish originally scraped data from the translated versions at any point when finalizing the ParlLawSpeech data.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># EP speeches data ####</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># # Version 15.09.2023 - ParlLawSpeech Dropbox</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># # Lukas Hetzer and Jan Schwalbach have given green light to use this version</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># speeches &lt;- read_rds("C:/Users/rauh/Dropbox/OPTED datasets/EP/Corpus_speeches_EP.RDS")</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># # Create unique row ID</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># speeches$id &lt;- 1:nrow(speeches)</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># # Store the data locally to have one fixed version</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># write_rds(speeches, "./data/EP_speeches_PLS-original.rds", compress =  "gz")</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Reload original speeche collection with unique ids</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>speeches <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"./data/EP_speeches_PLS-original.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="multilingualism-across-speeches" class="level2">
+<h2 class="anchored" data-anchor-id="multilingualism-across-speeches">Multilingualism across speeches</h2>
+<p>To get a sense of <em>multilingualism across speeches</em>, I then ran the three offline language detection algorithms from above for of each of the ~500k speeches in the corpus.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # Language detection in the EP - speech level ####</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># start &lt;- Sys.time()</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># speeches$lang_cld2 &lt;- cld2::detect_language(speeches$text)</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># speeches$lang_cld3 &lt;- cld3::detect_language(speeches$text)</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># speeches$lang_fastText &lt;- fastText::language_identification(input_obj = speeches$text,</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         pre_trained_language_model_path = file_ftz,</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         k = 1,</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         th = 0.0,</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         threads = 1,</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         verbose = TRUE)[[1]]</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># speeches$prob_fastText &lt;- fastText::language_identification(input_obj = speeches$text,</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         pre_trained_language_model_path = file_ftz,</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         k = 1,</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         th = 0.0,</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         threads = 1,</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                         verbose = TRUE)[[2]]</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co"># end &lt;- Sys.time()</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co"># end-start # 5 mins on Dell only</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co"># # Export lang detection results</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="co"># write_rds(speeches %&gt;% select(c(id, lang_cld2, lang_cld3, lang_fastText, prob_fastText)), </span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co">#                               "./data/EP-LangDetection_SpeechLevel.rds")</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co"># re-load</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>speeches <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"./data/EP-LangDetection_SpeechLevel.rds"</span>) <span class="co"># Note: no text</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Let us firstly check how much the three tools agree on the (major) language of the 500k+ EP speeches.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>speeches<span class="sc">$</span>lang_agreement <span class="ot">&lt;-</span> (speeches<span class="sc">$</span>lang_cld2 <span class="sc">==</span> speeches<span class="sc">$</span>lang_cld3 <span class="sc">&amp;</span> speeches<span class="sc">$</span>lang_fastText <span class="sc">==</span> speeches<span class="sc">$</span>lang_cld2 <span class="sc">&amp;</span>  speeches<span class="sc">$</span>lang_fastText <span class="sc">==</span> speeches<span class="sc">$</span>lang_cld3)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>speeches<span class="sc">$</span>lang_agreement[<span class="fu">is.na</span>(speeches<span class="sc">$</span>lang_agreement)] <span class="ot">&lt;-</span> F</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># sum(is.na(speeches$lang_agreement))</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Share of speeches on which the three detection tools agree: "</span>, <span class="fu">round</span>((<span class="fu">sum</span>(speeches<span class="sc">$</span>lang_agreement)<span class="sc">/</span><span class="fu">nrow</span>(speeches))<span class="sc">*</span><span class="dv">100</span>, <span class="dv">2</span>), <span class="st">"%"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Share of speeches on which the three detection tools agree: 98.58%"</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Number of speeches on which they disagree: "</span>, <span class="fu">sum</span>(<span class="sc">!</span>speeches<span class="sc">$</span>lang_agreement)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Number of speeches on which they disagree: 7232"</code></pre>
+</div>
+</div>
+<p>The <strong><em>detectors largely agree</em></strong>, but there is also a <strong><em>notable number of speeches on which the three detectors disagree</em></strong>.</p>
+<p>To understand that better, I look at the distribution of languages each tool has detected in the full EP corpus.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># what languages did they find?</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># The clds are notably more diverse (encoding issues?)</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># unique(speeches$lang_fastText)</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># unique(speeches$lang_cld2)</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># unique(speeches$lang_cld3)</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Counts of languages by detection method</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>languages <span class="ot">&lt;-</span> speeches <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">"lang"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>lang_agreement) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">detector =</span> name,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">language =</span> value) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">detector =</span> <span class="fu">str_remove</span>(detector, <span class="st">"lang_"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">language =</span> <span class="fu">str_remove</span>(language, <span class="st">"-Latn"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(detector, language) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">count =</span> <span class="fu">n</span>())</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the names right (as far as it can get)</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>isocodes <span class="ot">&lt;-</span> ISOcodes<span class="sc">::</span>ISO_639_2 <span class="sc">%&gt;%</span> </span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Alpha_2, Name) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">language =</span> Alpha_2,</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>         <span class="at">langname =</span> Name) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(language))</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>languages <span class="ot">&lt;-</span> languages <span class="sc">%&gt;%</span> </span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(isocodes, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"language"</span>))</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>languages<span class="sc">$</span>langname[<span class="fu">is.na</span>(languages<span class="sc">$</span>langname)] <span class="ot">&lt;-</span> languages<span class="sc">$</span>language[<span class="fu">is.na</span>(languages<span class="sc">$</span>langname)]</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Order by average prevalence  </span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>lang.order <span class="ot">&lt;-</span> languages <span class="sc">%&gt;%</span> </span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(langname) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(count)) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(mean))</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>languages<span class="sc">$</span>langname2 <span class="ot">&lt;-</span> <span class="fu">factor</span>(languages<span class="sc">$</span>langname, <span class="at">levels =</span> lang.order<span class="sc">$</span>langname)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Let’s consider at the overall prevalence of langauges first (here ignoring potential disagreement of the three detectors for a minute).</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Overall prevalence</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>lang.order <span class="sc">%&gt;%</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">share =</span> mean<span class="sc">/</span><span class="fu">sum</span>(lang.order<span class="sc">$</span>mean)) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>share, <span class="at">y=</span> <span class="fu">fct_rev</span>(<span class="fu">factor</span>(langname, <span class="at">levels =</span> lang.order<span class="sc">$</span>langname))))<span class="sc">+</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">width =</span> .<span class="dv">7</span>)<span class="sc">+</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">1</span>)), <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_percent</span>())<span class="sc">+</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Share of overall speeches in corpus"</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">""</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Est. language prevalence in PLS EP speeches corpus"</span>,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Speech-level language detection,</span><span class="sc">\n</span><span class="st">averaged across the three detection methods"</span>)<span class="sc">+</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="EP-languageDetection_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p><strong><em>Key insights</em></strong> here:</p>
+<ul>
+<li><p><strong><em>English is unsurprisingly the dominant language</em></strong> in this corpus along that measure.</p></li>
+<li><p><strong><em>Quite a few of the smaller European languages</em></strong> are detected on the speech level as well. Welsh or Letzeburgesch are examples.</p></li>
+<li><p>We also detect <em>a few very unlikely languages</em> such as Samoan, Igbo, or Vietnamese, for example, which might be detection errors, though …</p></li>
+</ul>
+<p>Let us see on which languages the three algorithms disagree:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prevalence by detector type</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(languages, <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">log</span>(count), <span class="at">y =</span> <span class="fu">fct_rev</span>(langname2), <span class="at">color =</span> detector, <span class="at">fill =</span> detector))<span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="fu">position_dodge2</span>(<span class="at">preserve =</span> <span class="st">"single"</span>, <span class="at">width =</span> .<span class="dv">7</span>))<span class="sc">+</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">1</span>)))<span class="sc">+</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">"Language detection method: "</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span><span class="st">"Language detection method: "</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"EP speech count</span><span class="sc">\n</span><span class="st">(logged for visual purposes)"</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y=</span> <span class="st">""</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Language detection in the ParlLawSpeech EP speeches corpus"</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Detection on the level of the full speech text"</span>)<span class="sc">+</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="EP-languageDetection_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>&nbsp;</p>
+<p><strong><em>Key points</em></strong> here<em>:</em></p>
+<ul>
+<li><p>The language detectors <em>almost perfectly agree for the big European languages, <strong>in particular with regard to English.</strong></em></p></li>
+<li><p>For smaller languages and for rather similar ones (e.g.&nbsp;Bosnian and Serbian), the detection methods disagree much more.</p></li>
+</ul>
+<p>On that basis, I then identify <strong><em>all speeches for which all three detection methods agree on English</em></strong> as the major language used and look at their prevalence over time.</p>
+<p>&nbsp;</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Clearly English speeches</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># All three detection methods should agree</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>speeches<span class="sc">$</span>clearly_english <span class="ot">&lt;-</span> (speeches<span class="sc">$</span>lang_cld2 <span class="sc">==</span> <span class="st">"en"</span> <span class="sc">&amp;</span> speeches<span class="sc">$</span>lang_cld3 <span class="sc">==</span> <span class="st">"en"</span> <span class="sc">&amp;</span> speeches<span class="sc">$</span>lang_fastText <span class="sc">==</span> <span class="st">"en"</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>speeches<span class="sc">$</span>clearly_english[<span class="fu">is.na</span>(speeches<span class="sc">$</span>clearly_english)] <span class="ot">&lt;-</span> F <span class="co"># Happens when one of the detectors has returned an NA, must thus be FALSE</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a> <span class="co"># sum(speeches$clearly_english)</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Add full speech intro again (dropped above)</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"./data/EP_speeches_PLS-original.rds"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(id, date ,text))</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>speeches <span class="ot">&lt;-</span> speeches <span class="sc">%&gt;%</span> </span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(df, <span class="at">by =</span> <span class="st">"id"</span>)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(df)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co"># gc()</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Share of clearly english speeches by month</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>en.share <span class="ot">&lt;-</span> speeches <span class="sc">%&gt;%</span> </span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month =</span> <span class="fu">as.character</span>(date) <span class="sc">%&gt;%</span> <span class="fu">str_remove</span>(<span class="st">"-[0-9]{1,2}$"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(month) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">en.count =</span> <span class="fu">sum</span>(clearly_english),</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>            <span class="at">count =</span> <span class="fu">n</span>())  <span class="sc">%&gt;%</span> </span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">en.share =</span> en.count<span class="sc">/</span>count)</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting parameters</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>breaks <span class="ot">&lt;-</span> en.share <span class="sc">%&gt;%</span> </span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(month) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(month, <span class="st">"-01$"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(month)</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>labels <span class="ot">&lt;-</span> <span class="fu">str_remove_all</span>(breaks, <span class="st">"-01"</span>)</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot</span></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(en.share, <span class="fu">aes</span>(<span class="at">x =</span> month, <span class="at">y =</span> en.share, <span class="at">group =</span> <span class="dv">1</span>))<span class="sc">+</span></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"#001489"</span>, <span class="at">size =</span> <span class="fl">1.2</span>)<span class="sc">+</span></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_percent</span>())<span class="sc">+</span></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">breaks =</span> breaks, <span class="at">labels =</span> labels)<span class="sc">+</span></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Share of English speeches in raw PLS EP speeches corpus"</span>,</span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"cld2, cld3, and fastText detection on speech-level agree on </span><span class="sc">\'</span><span class="st">en</span><span class="sc">\'</span><span class="st">"</span>,</span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Share of </span><span class="sc">\'</span><span class="st">clearly English</span><span class="sc">\'</span><span class="st"> speeches</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">Month"</span>)<span class="sc">+</span></span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"black"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="EP-languageDetection_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>&nbsp;</p>
+<p>This clearly shows that the <strong><em>official translation ended in late 2012</em></strong>, but we also see that there are <strong><em>some non-English speeches in the corpus beforehand</em></strong>. JS has highlighted this before, noting that these are most likely archival errors on part of the EP itself.</p>
+<p>&nbsp;</p>
+</section>
+<section id="multilingualism-within-individual-speeches" class="level2">
+<h2 class="anchored" data-anchor-id="multilingualism-within-individual-speeches">Multilingualism within individual speeches</h2>
+<p>The above gives a sense of language variation on the level of speeches, but the potentially thorny issue is <em>language variation within speeches</em>.</p>
+<p>To see how prevalent this is, I drew random samples of around 50k speeches from (a) those speeches that are marked as uniquely English by the three algorithms used above and form (b) those for which at least one algorithm suggest a different language as most likely.</p>
+<p>The I tokenized them into individual sentences and detected the language on that level, using the fastText algorithm here. The figure below shows how many different languages were detected within individual speeches along that line.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># round(sum(speeches$prob_fastText&gt;=.9)/nrow(speeches), 2)*100</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># # Language detection on the sentence level ####</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># # Random samples of 50.000 speeches (~10%)</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># # One for agreement on 'en' one without such agreement</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># # Speech detection runs for ~ 1h</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co"># file_ftz = system.file("language_identification/lid.176.ftz", package = "fastText")</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># sample.en &lt;- speeches %&gt;% </span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   filter(clearly_english) %&gt;% </span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   sample_n(50000, replace = F) %&gt;% </span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co">#   group_by(id) %&gt;% </span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co">#   unnest_tokens(output = sentence,</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co">#                 input = text,</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="co">#                 token = "sentences",</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="co">#                 to_lower = F) %&gt;% </span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="co">#   filter(str_detect(sentence, "[a-z]")) %&gt;% # Only sentence with at least one lowercase letter</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="co">#   mutate(lang = fastText::language_identification(input_obj = sentence,</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                   pre_trained_language_model_path = file_ftz,</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                   k = 1,</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                   th = 0.0,</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                   threads = 1,</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                   verbose = F)[[1]]) %&gt;% </span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="co">#   group_by(id) %&gt;% # speech level</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="co">#   summarise(detected.languages = length(unique(lang))) %&gt;% </span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a><span class="co">#   mutate(speech.en = "Speech level detection: English")</span></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a><span class="co"># sample.fo &lt;- speeches %&gt;% </span></span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a><span class="co">#   filter(!clearly_english) %&gt;% </span></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a><span class="co">#   sample_n(50000, replace = F) %&gt;% </span></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a><span class="co">#   group_by(id) %&gt;% </span></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a><span class="co">#   unnest_tokens(output = sentence,</span></span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a><span class="co">#                 input = text,</span></span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a><span class="co">#                 token = "sentences",</span></span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a><span class="co">#                 to_lower = F) %&gt;% </span></span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a><span class="co">#   filter(str_detect(sentence, "[a-z]")) %&gt;% # Only sentence with at least one lowercase letter</span></span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a><span class="co">#   mutate(lang = fastText::language_identification(input_obj = sentence,</span></span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                   pre_trained_language_model_path = file_ftz,</span></span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                   k = 1,</span></span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                   th = 0.0,</span></span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                   threads = 1,</span></span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                   verbose = F)[[1]]) %&gt;% </span></span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a><span class="co">#   group_by(id) %&gt;% # speech level</span></span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a><span class="co">#   summarise(detected.languages = length(unique(lang))) %&gt;% </span></span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a><span class="co">#   mutate(speech.en = "Speech level detection: Non-English")</span></span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a><span class="co"># sample &lt;- rbind(sample.en, sample.fo)</span></span>
+<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a><span class="co"># write_rds(sample, "./data/LanguageCountSample.rds")</span></span>
+<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>sample <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"./data/LanguageCountSample.rds"</span>)</span>
+<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sample, <span class="fu">aes</span>(<span class="at">x=</span> detected.languages))<span class="sc">+</span></span>
+<span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">width =</span> .<span class="dv">7</span>, <span class="at">bins =</span> <span class="fu">max</span>(sample<span class="sc">$</span>detected.languages), <span class="at">color =</span> <span class="cn">NA</span>, <span class="at">fill =</span> <span class="st">"#001489"</span>)<span class="sc">+</span></span>
+<span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">1</span>,<span class="fu">max</span>(sample<span class="sc">$</span>detected.languages), <span class="dv">1</span>))<span class="sc">+</span></span>
+<span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(.<span class="sc">~</span>speech.en, <span class="at">nrow =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb14-61"><a href="#cb14-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Frequency (number of speeches)</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb14-62"><a href="#cb14-62" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">Number of different languages detected in speech"</span>,</span>
+<span id="cb14-63"><a href="#cb14-63" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Estimated multilingualism in the EP speech corpus"</span>,</span>
+<span id="cb14-64"><a href="#cb14-64" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="fu">paste0</span>(<span class="st">"Random sample of "</span>, <span class="fu">nrow</span>(sample), <span class="st">" speeches, fastText language detection on sentence level"</span>))<span class="sc">+</span></span>
+<span id="cb14-65"><a href="#cb14-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="EP-languageDetection_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>&nbsp;</p>
+<p><strong><em>Key insights</em></strong> here:</p>
+<ul>
+<li><p><strong><em>Multilingualism in EP speeches is hardly an ubiquitous phenomenon</em></strong> along this measure. This large sample (~20% of the full corpus) suggests that it occurs 6% of speeches only.</p></li>
+<li><p>It is especially <strong><em>rare in speeches for which the three approaches to speech-level language detection agree on English</em></strong>. For those, the probability that more than one language is detected on the sentence levels is only 2% and fewer languages are detected at all (Maximum: 3).</p></li>
+</ul>
+</section>
+<section id="how-the-google-api-handles-multilingualism-in-speeches" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-google-api-handles-multilingualism-in-speeches">How the Google API handles multilingualism in speeches</h2>
+<p>We have seen that the Google API seems to be able to handle multilingualism at least partially in the mock examples above. To get a better sense on this issue, I construct a somewhat more real example by pasting paragraphs from <a href="https://ec.europa.eu/commission/presscorner/detail/ov/speech_22_5493">Von der Leyen’s 2023 SOTEU speech</a> together in which she has deliberately switched languages.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># SOTEU extracts</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>soteu <span class="ot">&lt;-</span> <span class="st">"This was wrong, not just for the climate, but also for our public finances, and our independence. And we are still paying for this today.</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="st">Only a few visionaries understood that the real problem was fossil fuels themselves, not just their price. Among them were our Danish friends.</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="st">When the oil crisis hit, Denmark started to invest heavily into harnessing the power of the wind. </span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="st">They laid the foundations for its global leadership in the sector and created tens of thousands of new jobs. </span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="st">This is the way to go! Not just a quick fix, but a change of paradigm, a leap into the future. </span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="st">STAYING THE COURSE AND PREPARING FOR THE FUTURE Mesdames et Messieurs les Députés, La bonne nouvelle est que cette transformation nécessaire a commencé.</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="st">Elle a lieu en mer du Nord et en mer Baltique, où nos États membres ont massivement investi dans l'éolien en mer. </span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="st">Elle a lieu en Sicile, où la plus grande usine solaire d'Europe produira bientôt la toute dernière génération de panneaux solaires. </span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="st">Et elle a lieu dans le nord de l'Allemagne, où les trains régionaux roulent désormais à l'hydrogène vert. L'hydrogène peut changer la donne pour l'Europe.</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="st">L'Union Européenne achètera dix avions amphibies légers et trois hélicoptères supplémentaires pour compléter notre flotte.</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="st">Voilà la solidarité européenne en action Honourable Members, The last years have shown how much Europe can achieve when it is united. </span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="st">After an unprecedented pandemic, our economic output overtook pre-crisis levels in record time. </span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="st">We went from having no vaccine to securing over 4 billion doses for Europeans and for the world.</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="st">And in record time, we came up with SURE – so that people could stay in their jobs even if their companies had run out of work. </span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="st">We were in the deepest recession since World War 2. We achieved the fastest recovery since the post-war boom.</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="st">And we will revise the Late Payment Directive – because it is simply not fair that 1 in 4 bankruptcies are due to invoices not being paid on time.</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="st">For millions of family businesses, this will be a lifeline in troubled waters. </span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="st">Der Mangel an Personal ist eine weitere Herausforderung für Europas Unternehmen. Die Zahl der Arbeitslosen ist so niedrig wie nie zuvor. </span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="st">Das ist gut! Aber gleichzeitig liegt die Zahl der offenen Stellen auf Rekordniveau. Ob Lastwagenfahrer, Kellnern oder Flughafenpersonal. </span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="st">Ob auch Krankenpfleger, Ingenieurinnen oder IT-Technikerinnen. Von Ungelernt bis Universitätsabschluß, Europa braucht sie alle! </span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="st">Wir müssen daher viel stärker in die Aus- und Weiterbildung investieren. </span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="st">Mit gleichgesinnten Partnern können wir auch außerhalb unserer Grenzen Arbeitsstandards und Umweltstandards sichern. </span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="st">Wir müssen vor allem unsere Beziehungen zu diesen Partnern und zu wichtigen Wachstumsregionen erneuern.</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a><span class="st">Ich werde daher die Abkommen mit Chile, Mexiko und Neuseeland zur Ratifizierung vorlegen. </span></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a><span class="st">Und wir treiben die Verhandlungen mit bedeutenden Partnern wie Australien und Indien voran. </span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="st">But securing supplies is only a first step. The processing of these metals is just as critical. </span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a><span class="st">Today, China controls the global processing industry. Almost 90 % of rare earths and 60 % of lithium are processed in China. </span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a><span class="st">We will identify strategic projects all along the supply chain, from extraction to refining, from processing to recycling. </span></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="st">And we will build up strategic reserves where supply is at risk."</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a><span class="co"># # Auto-translation with google</span></span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a><span class="co"># library(googleLanguageR)</span></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a><span class="co"># gl_auth("./private/opted-wp5-translation-4abef9cc0428.json") # Key for OPTED money ...</span></span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a><span class="co"># nchar(soteu) # 3356</span></span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a><span class="co"># soteu_translation &lt;-</span></span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a><span class="co">#   gl_translate(</span></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a><span class="co">#     soteu,</span></span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a><span class="co">#     target = "en",</span></span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a><span class="co">#     format = "text",</span></span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a><span class="co">#     model = "nmt")</span></span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a><span class="co"># write_rds(soteu_translation, "./testdata/SOTEU_translation.rds")</span></span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a>soteu <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"./testdata/SOTEU_translation.rds"</span>)</span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a>soteu <span class="sc">%&gt;%</span> <span class="fu">select</span>(text, translatedText) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl</span>(<span class="at">align=</span><span class="fu">c</span>(<span class="st">'l'</span>, <span class="st">'l'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_paper</span>(<span class="st">"hover"</span>, <span class="at">full_width =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="lightable-paper lightable-hover table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">text</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">translatedText</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">This was wrong, not just for the climate, but also for our public finances, and our independence. And we are still paying for this today. Only a few visionaries understood that the real problem was fossil fuels themselves, not just their price. Among them were our Danish friends. When the oil crisis hit, Denmark started to invest heavily into harnessing the power of the wind. They laid the foundations for its global leadership in the sector and created tens of thousands of new jobs. This is the way to go! Not just a quick fix, but a change of paradigm, a leap into the future. STAYING THE COURSE AND PREPARING FOR THE FUTURE Mesdames et Messieurs les Députés, La bonne nouvelle est que cette transformation nécessaire a commencé. Elle a lieu en mer du Nord et en mer Baltique, où nos États membres ont massivement investi dans l'éolien en mer. Elle a lieu en Sicile, où la plus grande usine solaire d'Europe produira bientôt la toute dernière génération de panneaux solaires. Et elle a lieu dans le nord de l'Allemagne, où les trains régionaux roulent désormais à l'hydrogène vert. L'hydrogène peut changer la donne pour l'Europe. L'Union Européenne achètera dix avions amphibies légers et trois hélicoptères supplémentaires pour compléter notre flotte. Voilà la solidarité européenne en action Honourable Members, The last years have shown how much Europe can achieve when it is united. After an unprecedented pandemic, our economic output overtook pre-crisis levels in record time. We went from having no vaccine to securing over 4 billion doses for Europeans and for the world. And in record time, we came up with SURE – so that people could stay in their jobs even if their companies had run out of work. We were in the deepest recession since World War 2. We achieved the fastest recovery since the post-war boom. And we will revise the Late Payment Directive – because it is simply not fair that 1 in 4 bankruptcies are due to invoices not being paid on time. For millions of family businesses, this will be a lifeline in troubled waters. Der Mangel an Personal ist eine weitere Herausforderung für Europas Unternehmen. Die Zahl der Arbeitslosen ist so niedrig wie nie zuvor. Das ist gut! Aber gleichzeitig liegt die Zahl der offenen Stellen auf Rekordniveau. Ob Lastwagenfahrer, Kellnern oder Flughafenpersonal. Ob auch Krankenpfleger, Ingenieurinnen oder IT-Technikerinnen. Von Ungelernt bis Universitätsabschluß, Europa braucht sie alle! Wir müssen daher viel stärker in die Aus- und Weiterbildung investieren. Mit gleichgesinnten Partnern können wir auch außerhalb unserer Grenzen Arbeitsstandards und Umweltstandards sichern. Wir müssen vor allem unsere Beziehungen zu diesen Partnern und zu wichtigen Wachstumsregionen erneuern. Ich werde daher die Abkommen mit Chile, Mexiko und Neuseeland zur Ratifizierung vorlegen. Und wir treiben die Verhandlungen mit bedeutenden Partnern wie Australien und Indien voran. But securing supplies is only a first step. The processing of these metals is just as critical. Today, China controls the global processing industry. Almost 90 % of rare earths and 60 % of lithium are processed in China. We will identify strategic projects all along the supply chain, from extraction to refining, from processing to recycling. And we will build up strategic reserves where supply is at risk.</td>
+<td style="text-align: left;">This was wrong, not just for the climate, but also for our public finances, and our independence. And we are still paying for this today. Only a few visionaries understood that the real problem was fossil fuels themselves, not just their price. Among them were our Danish friends. When the oil crisis hit, Denmark started to invest heavily in harnessing the power of the wind. They laid the foundations for its global leadership in the sector and created tens of thousands of new jobs. This is the way to go! Not just a quick fix, but a change of paradigm, a leap into the future. STAYING THE COURSE AND PREPARING FOR THE FUTURE Mesdames and Messieurs les Députés, La bonne new est que this transformation needs a commencé. Elle a lieu en mer du Nord et en mer Baltique, où nos États membres ont massivement investi dans l'éolien en mer. Elle a lieu en Sicile, où la plus grande solar factory d'Europe produira bientôt la toute dernière génération de panneaux solaires. Et elle a lieu dans le nord de l'Allemagne, où les trains régionaux roulent désormais à l'hydrogène vert. L'hydrogène peut changer la donne pour l'Europe. The Union Européenne achètera dix avions amphibies légers and three hélicoptères supplémentaires to complete our fleet. Voilà la solidarity européenne en action Honorable Members, The last years have shown how much Europe can achieve when it is united. After an unprecedented pandemic, our economic output exceeded pre-crisis levels in record time. We went from having no vaccine to securing over 4 billion doses for Europeans and for the world. And in record time, we came up with SURE – so that people could stay in their jobs even if their companies had run out of work. We were in the deepest recession since World War 2. We achieved the fastest recovery since the post-war boom. And we will revise the Late Payment Directive – because it is simply not fair that 1 in 4 bankruptcies are due to invoices not being paid on time. For millions of family businesses, this will be a lifeline in troubled waters. The lack of staff is another challenge for Europe's companies. The number of unemployed is lower than ever before. That's good! But at the same time the number of job vacancies is at record levels. Whether truck drivers, waiters or airport staff. Whether nurses, engineers or IT technicians. From unskilled to university degree, Europe needs them all! We therefore need to invest much more heavily in training and further education. With like-minded partners, we can also ensure labor standards and environmental standards outside our borders. Above all, we need to renew our relationships with these partners and with key growth regions. I will therefore submit the agreements with Chile, Mexico and New Zealand for ratification. And we are advancing negotiations with important partners such as Australia and India. But securing supplies is only a first step. The processing of these metals is just as critical. Today, China controls the global processing industry. Almost 90% of rare earths and 60% of lithium are processed in China. We will identify strategic projects all along the supply chain, from extraction to refining, from processing to recycling. And we will build up strategic reserves where supply is at risk.</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p>&nbsp;</p>
+<p><strong><em>That is disappointing</em></strong>: We see that the German bits have been translated well while the French bits were ignored. The API has also returned “de” as the detected source language which together suggests <strong><em>that the API translates only one language when several are actually in the document</em></strong>.</p>
+<p>&nbsp;</p>
+<p>Let’s see how it performs when <em>tokenizing the same text into sentences</em> (using tidytext here). Besides the raw and translated text, the table also indicates the source language detected by the API and the locally detected fastText variant.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # SOTEU extracts - sentence level</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># soteu &lt;- "This was wrong, not just for the climate, but also for our public finances, and our independence. And we are still paying for this today.</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Only a few visionaries understood that the real problem was fossil fuels themselves, not just their price. Among them were our Danish friends.</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># When the oil crisis hit, Denmark started to invest heavily into harnessing the power of the wind. </span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># They laid the foundations for its global leadership in the sector and created tens of thousands of new jobs. </span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co"># This is the way to go! Not just a quick fix, but a change of paradigm, a leap into the future. </span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co"># STAYING THE COURSE AND PREPARING FOR THE FUTURE Mesdames et Messieurs les Députés, La bonne nouvelle est que cette transformation nécessaire a commencé.</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Elle a lieu en mer du Nord et en mer Baltique, où nos États membres ont massivement investi dans l'éolien en mer. </span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Elle a lieu en Sicile, où la plus grande usine solaire d'Europe produira bientôt la toute dernière génération de panneaux solaires. </span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Et elle a lieu dans le nord de l'Allemagne, où les trains régionaux roulent désormais à l'hydrogène vert. L'hydrogène peut changer la donne pour l'Europe.</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co"># L'Union Européenne achètera dix avions amphibies légers et trois hélicoptères supplémentaires pour compléter notre flotte.</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Voilà la solidarité européenne en action Honourable Members, The last years have shown how much Europe can achieve when it is united. </span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co"># After an unprecedented pandemic, our economic output overtook pre-crisis levels in record time. </span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="co"># We went from having no vaccine to securing over 4 billion doses for Europeans and for the world.</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="co"># And in record time, we came up with SURE – so that people could stay in their jobs even if their companies had run out of work. </span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="co"># We were in the deepest recession since World War 2. We achieved the fastest recovery since the post-war boom.</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="co"># And we will revise the Late Payment Directive – because it is simply not fair that 1 in 4 bankruptcies are due to invoices not being paid on time.</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="co"># For millions of family businesses, this will be a lifeline in troubled waters. </span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Der Mangel an Personal ist eine weitere Herausforderung für Europas Unternehmen. Die Zahl der Arbeitslosen ist so niedrig wie nie zuvor. </span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Das ist gut! Aber gleichzeitig liegt die Zahl der offenen Stellen auf Rekordniveau. Ob Lastwagenfahrer, Kellnern oder Flughafenpersonal. </span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Ob auch Krankenpfleger, Ingenieurinnen oder IT-Technikerinnen. Von Ungelernt bis Universitätsabschluß, Europa braucht sie alle! </span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Wir müssen daher viel stärker in die Aus- und Weiterbildung investieren. </span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Mit gleichgesinnten Partnern können wir auch außerhalb unserer Grenzen Arbeitsstandards und Umweltstandards sichern. </span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Wir müssen vor allem unsere Beziehungen zu diesen Partnern und zu wichtigen Wachstumsregionen erneuern.</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Ich werde daher die Abkommen mit Chile, Mexiko und Neuseeland zur Ratifizierung vorlegen. </span></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Und wir treiben die Verhandlungen mit bedeutenden Partnern wie Australien und Indien voran. </span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a><span class="co"># But securing supplies is only a first step. The processing of these metals is just as critical. </span></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Today, China controls the global processing industry. Almost 90 % of rare earths and 60 % of lithium are processed in China. </span></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a><span class="co"># We will identify strategic projects all along the supply chain, from extraction to refining, from processing to recycling. </span></span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a><span class="co"># And we will build up strategic reserves where supply is at risk."</span></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a><span class="co"># soteu_sentences &lt;- soteu %&gt;% </span></span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a><span class="co">#   as.data.frame() %&gt;% </span></span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a><span class="co">#   rename(text = 1) %&gt;% </span></span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a><span class="co">#   mutate(id = 1) %&gt;% </span></span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a><span class="co">#   group_by(id) %&gt;%</span></span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a><span class="co">#   unnest_tokens(output = sentence,</span></span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a><span class="co">#                 input = text,</span></span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a><span class="co">#                 token = "sentences",</span></span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a><span class="co">#                 to_lower = F) %&gt;%</span></span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a><span class="co">#   mutate(lang = fastText::language_identification(input_obj = sentence,</span></span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                   pre_trained_language_model_path = file_ftz,</span></span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                   k = 1,</span></span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                   th = 0.0,</span></span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                   threads = 1,</span></span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a><span class="co">#                                                   verbose = F)[[1]])</span></span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a><span class="co"># # Auto-translation with google</span></span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a><span class="co"># library(googleLanguageR)</span></span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a><span class="co"># gl_auth("./private/opted-wp5-translation-4abef9cc0428.json") # Key for OPTED money ...</span></span>
+<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a><span class="co"># soteu_translation &lt;-</span></span>
+<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a><span class="co">#   gl_translate(</span></span>
+<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a><span class="co">#     soteu_sentences$sentence,</span></span>
+<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a><span class="co">#     target = "en",</span></span>
+<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a><span class="co">#     format = "text",</span></span>
+<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a><span class="co">#     model = "nmt")</span></span>
+<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a><span class="co"># soteu_translation$detectedLanguageFastText &lt;- soteu_sentences$lang</span></span>
+<span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a><span class="co"># write_rds(soteu_translation, "./testdata/SOTEU_translation_sentenceLevel.rds")</span></span>
+<span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a>soteu <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"./testdata/SOTEU_translation_sentenceLevel.rds"</span>)</span>
+<span id="cb16-67"><a href="#cb16-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-68"><a href="#cb16-68" aria-hidden="true" tabindex="-1"></a>soteu <span class="sc">%&gt;%</span> <span class="fu">select</span>(text, translatedText, detectedSourceLanguage, detectedLanguageFastText) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-69"><a href="#cb16-69" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">API_lang =</span> detectedSourceLanguage,</span>
+<span id="cb16-70"><a href="#cb16-70" aria-hidden="true" tabindex="-1"></a>         <span class="at">fastText_lang =</span> detectedLanguageFastText) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-71"><a href="#cb16-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl</span>(<span class="at">align=</span><span class="fu">c</span>(<span class="st">'l'</span>, <span class="st">'l'</span>, <span class="st">'c'</span>, <span class="st">'c'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-72"><a href="#cb16-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_paper</span>(<span class="st">"hover"</span>, <span class="at">full_width =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="lightable-paper lightable-hover table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">text</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">translatedText</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">API_lang</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">fastText_lang</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">This was wrong, not just for the climate, but also for our public finances, and our independence.</td>
+<td style="text-align: left;">This was wrong, not just for the climate, but also for our public finances, and our independence.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">And we are still paying for this today.</td>
+<td style="text-align: left;">And we are still paying for this today.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Only a few visionaries understood that the real problem was fossil fuels themselves, not just their price.</td>
+<td style="text-align: left;">Only a few visionaries understood that the real problem was fossil fuels themselves, not just their price.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Among them were our Danish friends.</td>
+<td style="text-align: left;">Among them were our Danish friends.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">When the oil crisis hit, Denmark started to invest heavily into harnessing the power of the wind.</td>
+<td style="text-align: left;">When the oil crisis hit, Denmark started to invest heavily into harnessing the power of the wind.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">They laid the foundations for its global leadership in the sector and created tens of thousands of new jobs.</td>
+<td style="text-align: left;">They laid the foundations for its global leadership in the sector and created tens of thousands of new jobs.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">This is the way to go!</td>
+<td style="text-align: left;">This is the way to go!</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Not just a quick fix, but a change of paradigm, a leap into the future.</td>
+<td style="text-align: left;">Not just a quick fix, but a change of paradigm, a leap into the future.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STAYING THE COURSE AND PREPARING FOR THE FUTURE Mesdames et Messieurs les Députés, La bonne nouvelle est que cette transformation nécessaire a commencé.</td>
+<td style="text-align: left;">STAYING THE COURSE AND PREPARING FOR THE FUTURE Ladies and Gentlemen, The good news is that this necessary transformation has begun.</td>
+<td style="text-align: center;">fr</td>
+<td style="text-align: center;">fr</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Elle a lieu en mer du Nord et en mer Baltique, où nos États membres ont massivement investi dans l'éolien en mer.</td>
+<td style="text-align: left;">It takes place in the North Sea and the Baltic Sea, where our Member States have invested heavily in offshore wind.</td>
+<td style="text-align: center;">fr</td>
+<td style="text-align: center;">fr</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Elle a lieu en Sicile, où la plus grande usine solaire d'Europe produira bientôt la toute dernière génération de panneaux solaires.</td>
+<td style="text-align: left;">It takes place in Sicily, where Europe's largest solar factory will soon produce the latest generation of solar panels.</td>
+<td style="text-align: center;">fr</td>
+<td style="text-align: center;">fr</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Et elle a lieu dans le nord de l'Allemagne, où les trains régionaux roulent désormais à l'hydrogène vert.</td>
+<td style="text-align: left;">And it takes place in northern Germany, where regional trains now run on green hydrogen.</td>
+<td style="text-align: center;">fr</td>
+<td style="text-align: center;">fr</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">L'hydrogène peut changer la donne pour l'Europe.</td>
+<td style="text-align: left;">Hydrogen can be a game changer for Europe.</td>
+<td style="text-align: center;">fr</td>
+<td style="text-align: center;">fr</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">L'Union Européenne achètera dix avions amphibies légers et trois hélicoptères supplémentaires pour compléter notre flotte.</td>
+<td style="text-align: left;">The European Union will purchase ten additional light amphibious aircraft and three helicopters to complete our fleet.</td>
+<td style="text-align: center;">fr</td>
+<td style="text-align: center;">fr</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Voilà la solidarité européenne en action Honourable Members, The last years have shown how much Europe can achieve when it is united.</td>
+<td style="text-align: left;">Voilà la solidarité européenne en action Honourable Members, The last years have shown how much Europe can achieve when it is united.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">After an unprecedented pandemic, our economic output overtook pre-crisis levels in record time.</td>
+<td style="text-align: left;">After an unprecedented pandemic, our economic output overtook pre-crisis levels in record time.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">We went from having no vaccine to securing over 4 billion doses for Europeans and for the world.</td>
+<td style="text-align: left;">We went from having no vaccine to securing over 4 billion doses for Europeans and for the world.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">And in record time, we came up with SURE – so that people could stay in their jobs even if their companies had run out of work.</td>
+<td style="text-align: left;">And in record time, we came up with SURE – so that people could stay in their jobs even if their companies had run out of work.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">We were in the deepest recession since World War 2.</td>
+<td style="text-align: left;">We were in the deepest recession since World War 2.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">We achieved the fastest recovery since the post-war boom.</td>
+<td style="text-align: left;">We achieved the fastest recovery since the post-war boom.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">And we will revise the Late Payment Directive – because it is simply not fair that 1 in 4 bankruptcies are due to invoices not being paid on time.</td>
+<td style="text-align: left;">And we will revise the Late Payment Directive – because it is simply not fair that 1 in 4 bankruptcies are due to invoices not being paid on time.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">For millions of family businesses, this will be a lifeline in troubled waters.</td>
+<td style="text-align: left;">For millions of family businesses, this will be a lifeline in troubled waters.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Der Mangel an Personal ist eine weitere Herausforderung für Europas Unternehmen.</td>
+<td style="text-align: left;">The lack of staff is another challenge for Europe's companies.</td>
+<td style="text-align: center;">de</td>
+<td style="text-align: center;">de</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Die Zahl der Arbeitslosen ist so niedrig wie nie zuvor.</td>
+<td style="text-align: left;">The number of unemployed is lower than ever before.</td>
+<td style="text-align: center;">de</td>
+<td style="text-align: center;">de</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Das ist gut!</td>
+<td style="text-align: left;">That's good!</td>
+<td style="text-align: center;">de</td>
+<td style="text-align: center;">de</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aber gleichzeitig liegt die Zahl der offenen Stellen auf Rekordniveau.</td>
+<td style="text-align: left;">But at the same time the number of job vacancies is at record levels.</td>
+<td style="text-align: center;">de</td>
+<td style="text-align: center;">de</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ob Lastwagenfahrer, Kellnern oder Flughafenpersonal.</td>
+<td style="text-align: left;">Whether truck drivers, waiters or airport staff.</td>
+<td style="text-align: center;">de</td>
+<td style="text-align: center;">de</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ob auch Krankenpfleger, Ingenieurinnen oder IT-Technikerinnen.</td>
+<td style="text-align: left;">Whether nurses, engineers or IT technicians.</td>
+<td style="text-align: center;">de</td>
+<td style="text-align: center;">de</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Von Ungelernt bis Universitätsabschluß, Europa braucht sie alle!</td>
+<td style="text-align: left;">From unskilled to university degree, Europe needs them all!</td>
+<td style="text-align: center;">de</td>
+<td style="text-align: center;">de</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Wir müssen daher viel stärker in die Aus- und Weiterbildung investieren.</td>
+<td style="text-align: left;">We therefore need to invest much more heavily in training and further education.</td>
+<td style="text-align: center;">de</td>
+<td style="text-align: center;">de</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Mit gleichgesinnten Partnern können wir auch außerhalb unserer Grenzen Arbeitsstandards und Umweltstandards sichern.</td>
+<td style="text-align: left;">With like-minded partners, we can also ensure labor standards and environmental standards outside our borders.</td>
+<td style="text-align: center;">de</td>
+<td style="text-align: center;">de</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Wir müssen vor allem unsere Beziehungen zu diesen Partnern und zu wichtigen Wachstumsregionen erneuern.</td>
+<td style="text-align: left;">Above all, we need to renew our relationships with these partners and with key growth regions.</td>
+<td style="text-align: center;">de</td>
+<td style="text-align: center;">de</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ich werde daher die Abkommen mit Chile, Mexiko und Neuseeland zur Ratifizierung vorlegen.</td>
+<td style="text-align: left;">I will therefore submit the agreements with Chile, Mexico and New Zealand for ratification.</td>
+<td style="text-align: center;">de</td>
+<td style="text-align: center;">de</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Und wir treiben die Verhandlungen mit bedeutenden Partnern wie Australien und Indien voran.</td>
+<td style="text-align: left;">And we are advancing negotiations with important partners such as Australia and India.</td>
+<td style="text-align: center;">de</td>
+<td style="text-align: center;">de</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">But securing supplies is only a first step.</td>
+<td style="text-align: left;">But securing supplies is only a first step.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">The processing of these metals is just as critical.</td>
+<td style="text-align: left;">The processing of these metals is just as critical.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Today, China controls the global processing industry.</td>
+<td style="text-align: left;">Today, China controls the global processing industry.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Almost 90 % of rare earths and 60 % of lithium are processed in China.</td>
+<td style="text-align: left;">Almost 90 % of rare earths and 60 % of lithium are processed in China.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">We will identify strategic projects all along the supply chain, from extraction to refining, from processing to recycling.</td>
+<td style="text-align: left;">We will identify strategic projects all along the supply chain, from extraction to refining, from processing to recycling.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">And we will build up strategic reserves where supply is at risk.</td>
+<td style="text-align: left;">And we will build up strategic reserves where supply is at risk.</td>
+<td style="text-align: center;">en</td>
+<td style="text-align: center;">en</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p>&nbsp;</p>
+<p><strong><em>Key points</em></strong> here:</p>
+<ul>
+<li><p>The <strong><em>local and the API language detection are consistent across all sentences</em></strong>.</p></li>
+<li><p>When languages mix withing a sentence, <strong><em>the API also only translates one language</em></strong> (apparently resorting to the document-level language detection)</p></li>
+<li><p>For this fictitious example, the <strong><em>sentence-level translation arguable results in a better result on the speech level</em></strong>.</p></li>
+</ul>
+<p>&nbsp;</p>
+</section>
+<section id="what-to-do" class="level2">
+<h2 class="anchored" data-anchor-id="what-to-do">What to do?</h2>
+<p>Based on the above, we basically have two options for auto-translation:</p>
+<p>&nbsp;</p>
+<section id="option-a---speech-level-auto-translation" class="level3">
+<h3 class="anchored" data-anchor-id="option-a---speech-level-auto-translation">OPTION (A) - Speech level auto translation</h3>
+<p>Select all speeches for which any of the three local algorithms indicates some other language than English and submit them speech by speech to the API for translation.</p>
+<p>Advantages:</p>
+<ul>
+<li><p>Quickly implementable</p></li>
+<li><p>Initial cost calculation applies</p></li>
+</ul>
+<p>Disadvantages</p>
+<ul>
+<li><p>Some / few untranslated sentences in about six percent of all speeches</p></li>
+<li><p>Future users need to be informed about this</p></li>
+</ul>
+<p>&nbsp;</p>
+</section>
+<section id="option-b---sentence-level-auto-translation" class="level3">
+<h3 class="anchored" data-anchor-id="option-b---sentence-level-auto-translation">OPTION (B) - Sentence level auto translation</h3>
+<p>Tokenize all (sic) ~500k speeches into sentences, run local language detetction on each of them, filter out non-English ones, and submit them consecutively to the API for translation. Then re-combine them with the sentences orginally in English in the correct orderv and re-aggregate text to the level of speeches.</p>
+<p>Advantages:</p>
+<ul>
+<li>Almost perfect English for all speeches</li>
+</ul>
+<p>Disadvantages:</p>
+<ul>
+<li><p>Cost-calculation should probably be re-run in order not to overrun the budget<br>
+(the Google API has no in-built cost control!)</p></li>
+<li><p>Lots of additonal coding work and API traffic</p></li>
+<li><p>Tasks need to be chunked probably</p></li>
+<li><p>Various potential sources of error along the way</p></li>
+</ul>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
