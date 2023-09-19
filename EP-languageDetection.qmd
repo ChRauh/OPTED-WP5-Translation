@@ -165,7 +165,7 @@ test %>% select(text, translatedText, lang_GoogleAPI, lang_cld2, lang_cld3, lang
   kable_paper("hover", full_width = T)
 ```
 
-&nbsp;
+ 
 
 The ***key insights*** here:
 
@@ -178,7 +178,7 @@ The ***key insights*** here:
 -   ***Importantly*****, the Google API handles multilingual text at least partially\
     **(n.b.: I have not specified a source language when calling the API above)
 
-&nbsp;
+ 
 
 ## Prepare the EP corpus
 
@@ -341,7 +341,7 @@ ggplot(languages, aes(x=log(count), y = fct_rev(langname2), color = detector, fi
 
 ```
 
-&nbsp;
+ 
 
 ***Key points*** here*:*
 
@@ -351,7 +351,7 @@ ggplot(languages, aes(x=log(count), y = fct_rev(langname2), color = detector, fi
 
 On that basis, I then identify ***all speeches for which all three detection methods agree on English*** as the major language used and look at their prevalence over time.
 
-&nbsp;
+ 
 
 ```{r}
 #| warning: false
@@ -400,11 +400,11 @@ ggplot(en.share, aes(x = month, y = en.share, group = 1))+
   theme(axis.text = element_text(color = "black"))
 ```
 
-&nbsp;
+ 
 
 This clearly shows that the ***official translation ended in late 2012***, but we also see that there are ***some non-English speeches in the corpus beforehand***. JS has highlighted this before, noting that these are most likely archival errors on part of the EP itself.
 
-&nbsp;
+ 
 
 ## Multilingualism within individual speeches
 
@@ -486,7 +486,7 @@ ggplot(sample, aes(x= detected.languages))+
 
 ```
 
-&nbsp;
+ 
 
 ***Key insights*** here:
 
@@ -560,11 +560,11 @@ soteu %>% select(text, translatedText) %>%
   kable_paper("hover", full_width = T)
 ```
 
-&nbsp;
+ 
 
 ***That is disappointing***: We see that the German bits have been translated well while the French bits were ignored. The API has also returned "de" as the detected source language which together suggests ***that the API translates only one language when several are actually in the document***.
 
-&nbsp;
+ 
 
 Let's see how it performs when *tokenizing the same text into sentences* (using tidytext here). Besides the raw and translated text, the table also indicates the source language detected by the API and the locally detected fastText variant.
 
@@ -643,7 +643,7 @@ soteu %>% select(text, translatedText, detectedSourceLanguage, detectedLanguageF
   kable_paper("hover", full_width = T)
 ```
 
-&nbsp;
+ 
 
 ***Key points*** here:
 
@@ -653,13 +653,13 @@ soteu %>% select(text, translatedText, detectedSourceLanguage, detectedLanguageF
 
 -   For this fictitious example, the ***sentence-level translation arguable results in a better result on the speech level***.
 
-&nbsp;
+ 
 
 ## What to do?
 
 Based on the above, we basically have two options for auto-translation:
 
-&nbsp;
+ 
 
 ### OPTION (A) - Speech level auto translation
 
@@ -677,7 +677,7 @@ Disadvantages
 
 -   Future users need to be informed about this
 
-&nbsp;
+ 
 
 ### OPTION (B) - Sentence level auto translation
 

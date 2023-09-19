@@ -50,3 +50,6 @@ rsconnect/
 
 # Private Information
 private/
+
+# Large data
+data/
