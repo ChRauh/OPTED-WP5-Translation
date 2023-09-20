@@ -653,6 +653,10 @@ soteu %>% select(text, translatedText, detectedSourceLanguage, detectedLanguageF
 
 -   For this fictitious example, the ***sentence-level translation arguable results in a better result on the speech level***.
 
+```         
+2019-04-17 Krišjānis Kariņš example
+```
+
  
 
 ## What to do?
