@@ -111,7 +111,7 @@ org_speeches <- read_rds("./data/EP_speeches_PLS-original.rds")
 speeches <- speeches %>% 
   left_join(org_speeches, by = "id")
 
-# Obs of original data?
+# # of obs of original data?
 nrow(speeches) == 509649
 
 # Write this to disk
