@@ -9,19 +9,19 @@
 
 # Packages #####
 
-library(tidyverse)
-library(tidytext)
-library(spacyr)
+library(tidyverse)       # CRAN v2.0.0
+library(tidytext)        # CRAN v0.4.1
+library(spacyr)          # CRAN v1.2.1
 spacy_initialize()
-library(progress)
-library(patchwork)
-library(googleLanguageR)
+library(progress)        # CRAN v1.2.2
+library(patchwork)       # CRAN v1.1.2
+library(googleLanguageR) # CRAN v0.3.0 # CRAN v0.3.0
 
 # Language detection packages
-library(fastText)
+library(fastText)        # CRAN v1.0.3
 file_ftz = system.file("language_identification/lid.176.ftz", package = "fastText") # The small pre-trained model
-library(cld2)
-library(cld3)
+library(cld2)            # CRAN v1.2.4
+library(cld3)            # CRAN v1.5.0
 
 
 # EP speech corpus ####
@@ -130,22 +130,22 @@ gc()
 
 
 
-# # Sentence tokenization - full corpus ####
-# 
-# # Tokenize with tidytext
-# start <- Sys.time()
-# sentences <- speeches %>%
-#     group_by(id) %>%
-#     unnest_tokens(output = sentence,
-#                   input = text,
-#                   token = "sentences",
-#                   to_lower = F) %>%
-#     ungroup()
-# duration <- Sys.time() - start
-# duration # 52 secs on Dell!?
-# 
-# # Export
-# write_rds(sentences, "./data/EP_speeches_PLS-SentenceTokenized.rds")
+# Sentence tokenization - full corpus ####
+
+# Tokenize with tidytext
+start <- Sys.time()
+sentences <- speeches %>%
+    group_by(id) %>%
+    unnest_tokens(output = sentence,
+                  input = text,
+                  token = "sentences",
+                  to_lower = F) %>%
+    ungroup()
+duration <- Sys.time() - start
+duration # 52 secs on Dell!?
+
+# Export
+write_rds(sentences, "./data/EP_speeches_PLS-SentenceTokenized.rds")
 
 sent <- read_rds("./data/EP_speeches_PLS-SentenceTokenized.rds")
 
@@ -232,7 +232,7 @@ sum(sent$lang_agree)/nrow(sent) # ~96%, nice
 # Where do they disagree?
 test <- sent %>% filter(!lang_agree)
 # All cases in which either of the clds fails to provide an answer or is markedly off 
-# fastText iis probably not always right, but clearly the best 
+# fastText is clearly the best 
 
 # -> Translate everything that is not "en" according to fastText and that has more than 1 letter
 
@@ -293,7 +293,7 @@ m.text
 
 # Translation - speech level
 
-library(googleLanguageR)
+library(googleLanguageR) # CRAN v0.3.0 # CRAN v0.3.0
 gl_auth("./private/opted-wp5-translation-4abef9cc0428.json") # Key for OPTED money ...
 
 m.text_transl <-
@@ -333,7 +333,7 @@ example <- data.frame(raw_text = m.text,
 write_rds(example, "./testdata/MultiLingualTranslationExample.rds")
 
 # Have a look
-library(kableExtra)
+library(kableExtra)      # CRAN v1.3.4
 example %>% kbl()
 
 # Get info on this speech
@@ -347,6 +347,8 @@ speech.info
 # Date: 2019-04-17
 # Speaker: Krišjānis Kariņš
 # Agenda: Debate with the Prime Minister of the Republic of Latvia, Krišjānis Kariņš, on the Future of Europe (debate)
+
+
 
 
 

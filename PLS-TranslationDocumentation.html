@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Christian Rauh">
+
+<title>ParlLawSpeech documentation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="PLS-TranslationDocumentation_files/libs/clipboard/clipboard.min.js"></script>
+<script src="PLS-TranslationDocumentation_files/libs/quarto-html/quarto.js"></script>
+<script src="PLS-TranslationDocumentation_files/libs/quarto-html/popper.min.js"></script>
+<script src="PLS-TranslationDocumentation_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="PLS-TranslationDocumentation_files/libs/quarto-html/anchor.min.js"></script>
+<link href="PLS-TranslationDocumentation_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="PLS-TranslationDocumentation_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="PLS-TranslationDocumentation_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="PLS-TranslationDocumentation_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="PLS-TranslationDocumentation_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#context-and-motivation" id="toc-context-and-motivation" class="nav-link active" data-scroll-target="#context-and-motivation">Context and motivation</a></li>
+  <li><a href="#how-and-what-to-translate" id="toc-how-and-what-to-translate" class="nav-link" data-scroll-target="#how-and-what-to-translate">How and what to translate?</a></li>
+  <li><a href="#european-parliament" id="toc-european-parliament" class="nav-link" data-scroll-target="#european-parliament">European Parliament</a>
+  <ul>
+  <li><a href="#sentence-tokenization" id="toc-sentence-tokenization" class="nav-link" data-scroll-target="#sentence-tokenization">Sentence tokenization</a></li>
+  <li><a href="#local-language-detection" id="toc-local-language-detection" class="nav-link" data-scroll-target="#local-language-detection">Local language detection</a></li>
+  <li><a href="#machine-translation" id="toc-machine-translation" class="nav-link" data-scroll-target="#machine-translation">Machine translation</a></li>
+  <li><a href="#re-aggregation-to-speech-level" id="toc-re-aggregation-to-speech-level" class="nav-link" data-scroll-target="#re-aggregation-to-speech-level">Re-aggregation to speech level</a></li>
+  <li><a href="#result" id="toc-result" class="nav-link" data-scroll-target="#result">Result</a></li>
+  </ul></li>
+  <li><a href="#hungarian-parliament-országgyűlés" id="toc-hungarian-parliament-országgyűlés" class="nav-link" data-scroll-target="#hungarian-parliament-országgyűlés">Hungarian parliament (Országgyűlés)</a>
+  <ul>
+  <li><a href="#machine-translation-1" id="toc-machine-translation-1" class="nav-link" data-scroll-target="#machine-translation-1">Machine translation</a></li>
+  <li><a href="#result-1" id="toc-result-1" class="nav-link" data-scroll-target="#result-1">Result</a></li>
+  </ul></li>
+  <li><a href="#api-usage-and-budget-consumption" id="toc-api-usage-and-budget-consumption" class="nav-link" data-scroll-target="#api-usage-and-budget-consumption">API usage and budget consumption</a></li>
+  <li><a href="#data-and-further-documentation" id="toc-data-and-further-documentation" class="nav-link" data-scroll-target="#data-and-further-documentation">Data and further documentation</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">ParlLawSpeech documentation</h1>
+<p class="subtitle lead">Machine translation of parliamentary speeches</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Christian Rauh </p>
+          </div>
+  </div>
+    
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">September 28, 2023</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+<style type="text/css">
+p {
+  text-align: justify;
+}
+a {
+  text-decoration: none;
+}
+</style>
+</div>
+<p>&nbsp;</p>
+<section id="context-and-motivation" class="level2">
+<h2 class="anchored" data-anchor-id="context-and-motivation">Context and motivation</h2>
+<p>The <a href="www.opted.eu"><strong><em>OPTED initiative</em></strong></a> (European Union Horizon 2020 research &amp; innovation programme / <a href="https://cordis.europa.eu/project/id/951832/en">Grant Agreement no. 951832</a>) is a design study that aims to show that and how an infrastructure for large-scale political text analysis could enhance systematic insights into the functioning of European democracies.</p>
+<p>In this context, the team of <a href="https://opted.eu/team/wp5-parliamentary-government-and-legal-texts/"><strong><em>OPTED Work Package 5</em></strong></a> has created <a href="https://chrauh.github.io/ParlLawSpeechTutorials"><strong><em>ParlLawSpeech</em></strong></a>, an encompassing new corpus offering readily machine-readable texts of the debates, bills, and laws from seven European parliaments. Large-scale comparative analysis of such text data is, however, significantly constrained by <em>language barriers</em> (see also <a href="https://opted.eu/designing-an-infrastructure/wp6-multilingual-text-analysis-and-validation-standards/">OPTED Work Package 6</a>)<strong><em>.</em></strong> Our design study thus also included some budget for inquiring <em>the potential of machine translation for political text data</em>.</p>
+<p>We accordingly decided to use this budget for <em>complementing some of our original-language parliamentary text corpora with machine translations in the English language.</em> This way, ParlLawSpeech provides additional data that can be used by a alrger number of scholars for either (a) validation studies regarding machine translation or (b) substantial analyses of parliamentary democracies for which language barriers have persisted thus far.</p>
+<p>To ensure that these additional data and their generation are transparent for prospective users and can be reproduced in other validation studies, <em>we document our respective choices and the implementation of our machine translations here</em>.</p>
+<p>&nbsp;</p>
+</section>
+<section id="how-and-what-to-translate" class="level2">
+<h2 class="anchored" data-anchor-id="how-and-what-to-translate">How and what to translate?</h2>
+<p>In terms of machine translation tools, we decided to use <a href="https://en.wikipedia.org/wiki/Google_Neural_Machine_Translation"><strong><em>Google’s Neural Machine Translation</em></strong></a> system. While more and more machine translation models become publicly available (e.g., <a href="https://huggingface.co/models?pipeline_tag=translation&amp;sort=trending">here</a>) this choice is driven by three considerations:</p>
+<ul>
+<li><p>There are already <em>validation studies of Google Translate</em> for political text analysis, using a.o. parliamentary speeches (esp.&nbsp;<a href="https://www.cambridge.org/core/journals/political-analysis/article/no-longer-lost-in-translation-evidence-that-google-translate-works-for-comparative-bagofwords-text-applications/43CB03805973BB8AD567F7AE50E72CA6">De Vries et al.&nbsp;2018</a> or <a href="https://www.cambridge.org/core/journals/political-analysis/article/computerassisted-text-analysis-for-comparative-politics/CC8B2CF63A8CC36FE00A13F9839F92BB">Lucas et al., 2015</a>). This provides relevant benchmarks for prospective users of our translated data while it also facilitates using them in cumulative validation efforts by the text analysis community.</p></li>
+<li><p>Compared to other tools, Google Translate still offers <em>the largest number of language pairs</em> available for translation, which is particularly relevant for multilingual parliaments such as the European Parliament (see below).</p></li>
+<li><p>The Google Translate model can be accessed on powerful servers through a <a href="https://cloud.google.com/translate/docs/reference/rest"><em>dedicated API</em></a> which enables us to handle large amounts of text data without additional investments in local computational hardware.</p></li>
+</ul>
+<p>However, using this service at scale is <a href="https://cloud.google.com/translate/pricing?hl=en"><em>subject to fees</em></a> – in September 2023 amounting to 20$ per 1 million translated text characters (where automatic, server-side language detection is included). Given a limited budget, we thus had to make <em>further choices</em> regarding which elements of ParlLawSpeech to translate.</p>
+<p>In this regard we first decided to <strong><em>focus on</em></strong> <strong><em>parliamentary debates and the speeches</em></strong>therein, rather than on the bill or law texts in our corpora: large amounts of speech over time and parliaments offer insigths on the widest number of substantial research questions that could be or partially have been addressed in the political science literature.</p>
+<p>But even with this restriction, the amount of text in our data by far exceeds the available translation budget - considering only speech corpora in ParlLawSpeech already amounts to more than three billion characters and corresponding translation costs of more than 60,600$ of translation costs at current Google prices.</p>
+<p>Weighing respective cost estimations for our individual parliamentary speech corpora against potential benefits for the wider political science community, we decided to translate the debates of the <strong><em>European Parliament</em></strong> <strong>(EP)</strong> as well as of the <strong><em>Hungarian parliament (Országgyűlés)</em></strong> - together accounting for around <strong><em>25,000$ of translation costs</em></strong> (see also below).</p>
+<p>We consider the EP as particualrly important for translation as it is the only true supranational but also decidedly multilingual parliament (which stopped providing official translations around November 2012). And we consider the Hungarian Parliament as particularly relevant for translation as it operates in a country for which many analysts attest a declining quality of democracy while it uses a language that is much more rarely spoken or read than other (western) European languages.</p>
+<p>Especially for these two parliaments, thus, <strong><em>access to all-English text corpora of speeches</em></strong> seems to be most valuable for political science. In the remainder we document how the respective and initially validated text corpora in the ParlLawSpeech collection have been machine translated.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</section>
+<section id="european-parliament" class="level2">
+<h2 class="anchored" data-anchor-id="european-parliament">European Parliament</h2>
+<p>For the European Parliament (EP), the original ParlLawSpeech collection starts in July 1999 and ends in April 2019, containing more than <em>500.000 indivdial speeches</em>.</p>
+<p>It initially contains the <em>official translations</em> that the EP itself has published in its archives up until November 2012. But already in this early period, our local language detection tools (using the small fastText model as well as the compact language detectors in versions 2 and 3) suggest that many speeches have been <em>wrongly classified</em> by the EP as English.</p>
+<p>After November 2012, speeches are <em>only represented in the language that the respective speaker has chosen</em>. A particular challenge here is that many speakers actually <em>switch languages</em> when giving a speech to the European parliament - our initial analyses suggest that this is true for at least 6% of all speeches.</p>
+<p>&nbsp;</p>
+<section id="sentence-tokenization" class="level4">
+<h4 class="anchored" data-anchor-id="sentence-tokenization">Sentence tokenization</h4>
+<p>Because of these language switches and based on multiple prior analyses and tests (a.o. <a href="http://htmlpreview.github.io/?https://github.com/ChRauh/OPTED-WP5-Translation/blob/main/EP-languageDetection.html">here</a>), we decided to <em>operate on the sentence- rather than on the speech level</em> for this particular corpus.</p>
+<p>That is, we first split each EP speech into individual sentences (using the tidytext tokenizers that showed better results that those offered by spacyR in qualitative analyses) along the code below.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)       <span class="co"># CRAN v2.0.0</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytext)        <span class="co"># CRAN v0.4.1</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(progress)        <span class="co"># CRAN v1.2.2</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># EP speech corpus ####</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Validated PLS Version including a unique row ID</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>speeches <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"./data/EP_speeches_PLS-original.rds"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(id, text))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Sentence tokenization - full corpus ####</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># with tidytext</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>start <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>sentences <span class="ot">&lt;-</span> speeches <span class="sc">%&gt;%</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unnest_tokens</span>(<span class="at">output =</span> sentence,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>                  <span class="at">input =</span> text,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>                  <span class="at">token =</span> <span class="st">"sentences"</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>                  <span class="at">to_lower =</span> F) <span class="sc">%&gt;%</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ungroup</span>()</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>duration <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>() <span class="sc">-</span> start</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>duration <span class="co"># 52 secs on Dell</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Export</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(sentences, <span class="st">"./data/EP_speeches_PLS-SentenceTokenized.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>&nbsp;</p>
+<p>Then we carefully inspected the sentence tokenization output along the following code:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>sent <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"./data/EP_speeches_PLS-SentenceTokenized.rds"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect ####</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Some sentence parameters</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>sent<span class="sc">$</span>wordcount <span class="ot">&lt;-</span> <span class="fu">str_count</span>(sent<span class="sc">$</span>sentence, <span class="st">"</span><span class="sc">\\</span><span class="st">w+"</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>sent<span class="sc">$</span>chars <span class="ot">&lt;-</span> <span class="fu">nchar</span>(sent<span class="sc">$</span>sentence)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>sent<span class="sc">$</span>letters <span class="ot">&lt;-</span> <span class="fu">str_count</span>(sent<span class="sc">$</span>sentence, <span class="st">"[A-Za-z]"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of detected sentences by speech (id)</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>spe.sent <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">sentences =</span> <span class="fu">n</span>())</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Wordcount inspection</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(sent<span class="sc">$</span>wordcount)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> <span class="fu">filter</span>(wordcount <span class="sc">&gt;</span> <span class="dv">32</span>) <span class="co"># 3rd Quartile - lots of normal stuff</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> <span class="fu">filter</span>(wordcount <span class="sc">&gt;</span> <span class="dv">100</span>) <span class="co"># Much looks correct, lots on non-english on first impression  - sometimes agenda items with doc titles and sponsor etc show up here</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> <span class="fu">filter</span>(wordcount <span class="sc">&gt;</span> <span class="dv">1000</span>) <span class="co"># 12, all agenda items (probably not spoken words but no language errors)</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> <span class="fu">filter</span>(wordcount <span class="sc">&lt;</span> <span class="dv">14</span>) <span class="co"># 1st Quartile - normal short sentences</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> <span class="fu">filter</span>(wordcount <span class="sc">&lt;</span> <span class="dv">7</span>) <span class="co"># 230k still - reasonable stuff, lots of bracketed interventions</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> <span class="fu">filter</span>(wordcount <span class="sc">==</span> <span class="dv">0</span>) <span class="co"># 616 - Only puntuation and formating markers like ⁂ - probably need to be excluded from  language detection and translation</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Character count</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(sent<span class="sc">$</span>chars)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> <span class="fu">filter</span>(chars <span class="sc">&lt;</span> <span class="dv">3</span>) <span class="co"># 2073 - ordered or decimal numbers (like "1."), abbreviations / initials (like "M."), and individual punctuation characters</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Her slight issues may occur when aggregating this pack to the speech level, e.g. where the tokenizer has split a decimal number - maybe manually correct after aggregation?</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Letter count</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(sent<span class="sc">$</span>letters)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> <span class="fu">filter</span>(letters <span class="sc">&lt;=</span> <span class="dv">3</span>) <span class="co"># 7850 - lots of greek and cyrillic (well...) - these should not be excluded from language detection and translation!</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co"># str_count("Κυρία Πρόεδρε, κάθε χώρα της Ευρωπαϊκής Ένωσης", "\\w") # counts this as letters</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>sent<span class="sc">$</span>letters <span class="ot">&lt;-</span> <span class="fu">str_count</span>(sent<span class="sc">$</span>sentence, <span class="st">"</span><span class="sc">\\</span><span class="st">w"</span>) <span class="sc">-</span> <span class="fu">str_count</span>(sent<span class="sc">$</span>sentence, <span class="st">"[0-9]"</span>) <span class="sc">-</span> <span class="fu">str_count</span>(sent<span class="sc">$</span>sentence, <span class="fu">fixed</span>(<span class="st">"_"</span>)) <span class="co"># All letters (from whatever alphabet)</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(sent<span class="sc">$</span>letters)</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> <span class="fu">filter</span>(letters <span class="sc">&lt;=</span> <span class="dv">3</span>) <span class="co"># 5241 - lots of valid examples ("How?")</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> <span class="fu">filter</span>(letters <span class="sc">&lt;=</span> <span class="dv">2</span>) <span class="co"># 3949 - still lots of valid examples ("No!")  - but also lots of digits and abbreviations as seen above</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> <span class="fu">filter</span>(letters <span class="sc">==</span> <span class="dv">0</span>) <span class="co"># All stuff that does not / cannot be translated</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> <span class="fu">filter</span>(letters <span class="sc">==</span> <span class="dv">1</span>) <span class="co"># 458 - these are the initials - seems to be the sweet spot - try detecting languages ananything with letters &gt;1</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> <span class="fu">filter</span>(letters <span class="sc">&lt;</span> <span class="dv">2</span>) <span class="co"># 3066 - looks about right - all-non translatable stuff </span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Sentences per speech</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(spe.sent<span class="sc">$</span>sentences)</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> <span class="fu">filter</span>(id <span class="sc">%in%</span> spe.sent<span class="sc">$</span>id[spe.sent<span class="sc">$</span>sentences <span class="sc">&gt;</span> <span class="dv">50</span>]) <span class="co"># Looks reasonable - 198 is a good example for a multilingual speech</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> <span class="fu">filter</span>(id <span class="sc">%in%</span> spe.sent<span class="sc">$</span>id[spe.sent<span class="sc">$</span>sentences <span class="sc">&gt;</span> <span class="dv">250</span>]) <span class="co"># Looks reasonable</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="co"># 198- first couple of sentences contain four different languages - test example!</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="co"># 227370 - Good example for wrongly split sentence - "Es entsteht zurzeit innerhalb der Grenzen der Europäischen Union ein 29.", "Staat.".</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="co"># Except for decimal/ordered numbers/dates and abbreviations splitting looks quite good</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>&nbsp;</p>
+<p>The results suggest mostly correct sentence tokenization - but also indicate some errors regarding single letter abbreviations or wrongly split decimal numbers.</p>
+<p>&nbsp;</p>
+</section>
+<section id="local-language-detection" class="level4">
+<h4 class="anchored" data-anchor-id="local-language-detection">Local language detection</h4>
+<p>In order to avoid sending text to the translation API that is already in English (and for which no money should be spent, accordingly) we then ran three local language detection algorithms (circling around the tokenization errors note above):</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Language detection packages</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fastText)        <span class="co"># CRAN v1.0.3</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>file_ftz <span class="ot">=</span> <span class="fu">system.file</span>(<span class="st">"language_identification/lid.176.ftz"</span>, <span class="at">package =</span> <span class="st">"fastText"</span>) <span class="co"># The small pre-trained model</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cld2)            <span class="co"># CRAN v1.2.4</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cld3)            <span class="co"># CRAN v1.5.0</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Language detection ####</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Circling around potential errors along the letter limit developed above</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># fastText</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>sent<span class="sc">$</span>lang_ft <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>sent<span class="sc">$</span>lang_ft[sent<span class="sc">$</span>letters <span class="sc">&gt;</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> fastText<span class="sc">::</span><span class="fu">language_identification</span>(<span class="at">input_obj =</span> sent<span class="sc">$</span>sentence[sent<span class="sc">$</span>letters <span class="sc">&gt;</span> <span class="dv">1</span>],</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>                                                                     <span class="at">pre_trained_language_model_path =</span> file_ftz,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>                                                                     <span class="at">k =</span> <span class="dv">1</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>                                                                     <span class="at">th =</span> <span class="fl">0.0</span>,</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>                                                                     <span class="at">threads =</span> <span class="dv">1</span>,</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>                                                                     <span class="at">verbose =</span> T)[[<span class="dv">1</span>]] <span class="co"># This one takes a bit ...</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Compact language detector 2</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>sent<span class="sc">$</span>lang_cld2 <span class="ot">&lt;-</span><span class="cn">NA</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>sent<span class="sc">$</span>lang_cld2[sent<span class="sc">$</span>letters <span class="sc">&gt;</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> cld2<span class="sc">::</span><span class="fu">detect_language</span>(sent<span class="sc">$</span>sentence[sent<span class="sc">$</span>letters <span class="sc">&gt;</span> <span class="dv">1</span>])</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Compact language detector 3</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>sent<span class="sc">$</span>lang_cld3 <span class="ot">&lt;-</span><span class="cn">NA</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>sent<span class="sc">$</span>lang_cld3[sent<span class="sc">$</span>letters <span class="sc">&gt;</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> cld3<span class="sc">::</span><span class="fu">detect_language</span>(sent<span class="sc">$</span>sentence[sent<span class="sc">$</span>letters <span class="sc">&gt;</span> <span class="dv">1</span>])</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co"># How often do they agree?</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>sent<span class="sc">$</span>lang_agree <span class="ot">&lt;-</span> (sent<span class="sc">$</span>lang_cld2 <span class="sc">==</span> sent<span class="sc">$</span>lang_cld3 <span class="sc">&amp;</span> sent<span class="sc">$</span>lang_ft <span class="sc">==</span> sent<span class="sc">$</span>lang_cld2 <span class="sc">&amp;</span>  sent<span class="sc">$</span>lang_ft <span class="sc">==</span> sent<span class="sc">$</span>lang_cld3)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>sent<span class="sc">$</span>lang_agree <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(sent<span class="sc">$</span>lang_ft) <span class="sc">&amp;</span> <span class="fu">is.na</span>(sent<span class="sc">$</span>lang_cld2) <span class="sc">&amp;</span> <span class="fu">is.na</span>(sent<span class="sc">$</span>lang_cld3),</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>                          T,</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>                          sent<span class="sc">$</span>lang_agree)</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>sent<span class="sc">$</span>lang_agree[<span class="fu">is.na</span>(sent<span class="sc">$</span>lang_agree)] <span class="ot">&lt;-</span> F</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(sent<span class="sc">$</span>lang_agree)<span class="sc">/</span><span class="fu">nrow</span>(sent) <span class="co"># ~96%, nice</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Where do they disagree?</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span>lang_agree)</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="co"># All cases in which either of the clds fails to provide an answer or is markedly off </span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="co"># fastText is clearly the best </span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; Translate everything that is not "en" according to fastText and that has more than 1 letter</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Other cross-checks</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(lang_ft)) <span class="co"># Good!</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> <span class="fu">filter</span>(lang_ft <span class="sc">!=</span> <span class="st">"en"</span> <span class="sc">&amp;</span> letters <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="co"># Stuff to be translated - Looks good!</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span>(lang_ft <span class="sc">!=</span> <span class="st">"en"</span> <span class="sc">&amp;</span> letters <span class="sc">&gt;</span> <span class="dv">1</span>)) <span class="co"># Stuff that doesn't need to be translated - Looks good, except a few short sentences wrongly calssified as English ("Pozdrawiam.", "Fru talman!", "Formand!")</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span>(lang_ft <span class="sc">!=</span> <span class="st">"en"</span> <span class="sc">&amp;</span> letters <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">&amp;</span> <span class="sc">!</span>lang_agree) <span class="co"># closer look on potentially false negatives - 63843 -- all very short, the overarching majority true English </span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="co"># Mark translation need ####</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="co"># Based on the above insights</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>sent<span class="sc">$</span>toBeTranslated <span class="ot">&lt;-</span> (sent<span class="sc">$</span>lang_ft <span class="sc">!=</span> <span class="st">"en"</span> <span class="sc">&amp;</span> sent<span class="sc">$</span>letters <span class="sc">&gt;</span> <span class="dv">1</span>)</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(sent<span class="sc">$</span>toBeTranslated) <span class="co"># 1423824   </span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="co"># Cost estimation ####</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of characters to be sent to the API</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>characters <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">nchar</span>(sent<span class="sc">$</span>sentence[sent<span class="sc">$</span>toBeTranslated]))</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="co"># In Dollars - 20$ for 1 Mio characters</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>dollars <span class="ot">&lt;-</span> (characters<span class="sc">/</span><span class="dv">1000000</span>)<span class="sc">*</span><span class="dv">20</span></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="co"># In Euro - today: 0.94€ = 1$</span></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>euros <span class="ot">&lt;-</span> dollars<span class="sc">*</span><span class="fl">0.94</span></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(euros, <span class="dv">2</span>) <span class="co"># 4238.62€</span></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="co"># Export sentence level data for translation ####</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="co"># Unique sentence id!</span></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>sent<span class="sc">$</span>sentence_id <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(sent)</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a><span class="co"># Export</span></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(sent, <span class="st">"./data/EP_speeches_PLS-SentenceTokenizedForTranslation.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>&nbsp;</p>
+</section>
+<section id="machine-translation" class="level4">
+<h4 class="anchored" data-anchor-id="machine-translation">Machine translation</h4>
+<p>Then we submitted all non-English sentences containing more than one letter to the Google Translation API (which detects the respective source language on its own), using the <a href="https://cran.r-project.org/web/packages/googleLanguageR/index.html">googleLanguageR</a> package as well as a private API-key pointing for billing in the OPTED budget (handled by the WZB Berlin/Seibert Media GmbH). To ensure control of progress, catch potential errors, and minimize API overload the code proceeds sentence-by-sentence. The subsequent code ran between September 20 and 23, 2023.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Packages #####</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)       <span class="co"># CRAN v2.0.0</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(progress)        <span class="co"># CRAN v1.2.2</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(googleLanguageR) <span class="co"># CRAN v0.3.0</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">gl_auth</span>(<span class="st">"./private/opted-wp5-translation-4abef9cc0428.json"</span>) <span class="co"># Private API key linked to OPTED budget ....</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># EP speeches ####</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Sentence tokenized and with language detection etc.</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>sent <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"./data/EP_speeches_PLS-SentenceTokenizedForTranslation.rds"</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Translation ####</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># To keep track of potential errors and minimize the amount of data/costs to be burned at once</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># I decided to proceed iteratively, calling the APi only when a sentence is to be translated (non-English, more than one 'letter', see earlier script)</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co"># and only when the translated column is not populated yet (this way the loop can be run recursively, but not the column initialization!)</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">ATTENTION</span><span class="co"> WHEN REPEATING THE LOOP</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>sent<span class="sc">$</span>lang_Google <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>sent<span class="sc">$</span>translatedText <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co"># # Sample for testing</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co"># sent &lt;- sent %&gt;%</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co">#   sample_n(size = 100)</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co"># API translation sentence by sentence (if applicable)</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>pb <span class="ot">&lt;-</span> progress_bar<span class="sc">$</span><span class="fu">new</span>(<span class="at">total =</span> <span class="fu">nrow</span>(sent)) <span class="co"># Progress</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(sent)) {</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Test if current row/sentence needs to be translated</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span>sent<span class="sc">$</span>toBeTranslated[i]) {<span class="cf">next</span>}</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.na</span>(sent<span class="sc">$</span>translatedText[i])) {<span class="cf">next</span>}  </span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Send current sentence to Google API and collect response</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>  tr <span class="ot">&lt;-</span> <span class="fu">gl_translate</span>(</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    sent<span class="sc">$</span>sentence[i],</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">target =</span> <span class="st">"en"</span>,</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">"text"</span>,</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">source =</span> <span class="st">""</span>, <span class="co"># automatic language detection</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="st">"nmt"</span>)</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Store API response in sentence data</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>  sent<span class="sc">$</span>translatedText[i] <span class="ot">&lt;-</span> tr<span class="sc">$</span>translatedText[<span class="dv">1</span>]</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>  sent<span class="sc">$</span>lang_Google[i] <span class="ot">&lt;-</span> tr<span class="sc">$</span>detectedSourceLanguage[<span class="dv">1</span>]</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Update progress</span></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>  pb<span class="sc">$</span><span class="fu">tick</span>()</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a><span class="fu">gc</span>()</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a><span class="co"># Export sentence-level results ####</span></span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(sent, <span class="st">"./data/EP_speeches_PLS-Sentences_Translated.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The resulting data contain the translated text in <code>sent$translatedText</code> and, for cross-checks, the language that the Google model itself has detected in the original speech/sentence text in <code>sent$detectedLanguage</code> (almost perfectly consistent with the local fastText results).</p>
+<p>&nbsp;</p>
+</section>
+<section id="re-aggregation-to-speech-level" class="level4">
+<h4 class="anchored" data-anchor-id="re-aggregation-to-speech-level">Re-aggregation to speech level</h4>
+<p>The we re-assemble the individual sentences (translated or not) to the level of the individual speech, adding the a logical indicator <code>speeches$translationInSpeech</code>for whether any actually machine-translated material is contained in the <code>speeches$translatedText</code> column. Then we append these results to the original ParlLawSpeech collection of EP speeches and store the final data set.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aggregate to speech level####</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Store speech ids in which translation occurred </span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>tr_speeches <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(toBeTranslated) <span class="sc">%&gt;%</span> <span class="co"># Only speeches which at least one translated sentence</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>() <span class="co"># Vector of respective speech ids</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Aggregate sentences to speech text</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>speeches <span class="ot">&lt;-</span> sent <span class="sc">%&gt;%</span> </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">text =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(translatedText), <span class="co"># If there is no translation</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>                       sentence,              <span class="co"># Keep the raw text, else ...</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>                       translatedText)) <span class="sc">%&gt;%</span>   <span class="co"># Keep the translation</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span>                            <span class="co"># Speech level grouping</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">translatedText =</span> <span class="fu">paste</span>(text, <span class="at">collapse =</span> <span class="st">" "</span>)) <span class="co"># Sentences separate by exactly one white-space</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Mark speeches in which translations occurred  </span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Along the ids identified above</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>speeches <span class="ot">&lt;-</span> speeches <span class="sc">%&gt;%</span> </span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">translationInSpeech =</span> <span class="fu">ifelse</span>(id <span class="sc">%in%</span> tr_speeches, T, F))</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(speeches<span class="sc">$</span>translationInSpeech)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Export speech level results ####</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="co"># after merging them with the original meta data </span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Original speech level data</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>org_speeches <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"./data/EP_speeches_PLS-original.rds"</span>) </span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Join translations and original data</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>speeches <span class="ot">&lt;-</span> speeches <span class="sc">%&gt;%</span> </span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(org_speeches, <span class="at">by =</span> <span class="st">"id"</span>)</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="co"># # of obs of original data?</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(speeches) <span class="sc">==</span> <span class="dv">509649</span> <span class="co"># TRUE</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Write this to disk</span></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(speeches, <span class="st">"./data/EP_speeches_PLS-Translated.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>&nbsp;</p>
+</section>
+<section id="result" class="level4">
+<h4 class="anchored" data-anchor-id="result">Result</h4>
+<p>The resulting data file contains all data from the original ParlLawSpeech collection of <strong><em>509,649 EP speeches between July 20 1999 and April 18 2019, of which 240,932 contain (partially) machine translated text.</em></strong></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</section>
+</section>
+<section id="hungarian-parliament-országgyűlés" class="level2">
+<h2 class="anchored" data-anchor-id="hungarian-parliament-országgyűlés">Hungarian parliament (Országgyűlés)</h2>
+<p>&nbsp;</p>
+<section id="machine-translation-1" class="level4">
+<h4 class="anchored" data-anchor-id="machine-translation-1">Machine translation</h4>
+<p>After prior local language detection checks we could confirm that multilingualism does hardly occur in the Hungarian parliament, so that we could operate on the <em>level of full speeches</em> in this instance. This, however, meant larger and thus slower API calls while the overall corpus is also much larger than the material that had to be translated for the EP. In total, we submitted around 1 billion characters of Hungarian speech text for machine translation into English.</p>
+<p>The code below was initiated on September 25, 2023 and had to be partially re-run on September 26 and 27 for a subset of non-translated speeches as the texts of four unique <code>speech_id</code> exceeded the length quota of the Google API (documented in the code)</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Packages &amp; auth #####</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)       <span class="co"># CRAN v2.0.0</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(progress)        <span class="co"># CRAN v1.2.2</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(googleLanguageR) <span class="co"># CRAN v0.3.0</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">gl_auth</span>(<span class="st">"./private/opted-wp5-translation-4abef9cc0428.json"</span>) <span class="co"># Private API Key to OPTED money ...</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Dropbox path</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>dp <span class="ot">&lt;-</span><span class="st">"C:/Users/rauh/Dropbox/OPTED datasets"</span> <span class="co"># WZB</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Hungary - speech corpus ####</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Validated PLS version dated from August 24 2023</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>speeches <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="at">file =</span> <span class="fu">paste0</span>(dp, <span class="st">"/Hungary/Corpus_speeches_hungary.rds"</span>))</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>speeches<span class="sc">$</span>tr_id <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(speeches) <span class="co"># To have at least one unique id</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Cost estimation ####</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>speeches<span class="sc">$</span>characters <span class="ot">&lt;-</span> <span class="fu">nchar</span>(speeches<span class="sc">$</span>text)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>characters <span class="ot">&lt;-</span> <span class="fu">sum</span>(speeches<span class="sc">$</span>characters, <span class="at">na.rm =</span> T)</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>dollars <span class="ot">&lt;-</span> (characters<span class="sc">/</span><span class="dv">1000000</span>)<span class="sc">*</span><span class="dv">20</span> <span class="co"># 20 Dollars per 1 mio characters</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>euros <span class="ot">&lt;-</span> dollars <span class="sc">*</span> <span class="fl">0.94</span> <span class="co"># As of September 25 2023</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>euros <span class="co"># 20145.31 €</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(characters, dollars, euros)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Some checks </span><span class="al">###</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> speeches <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(characters)) <span class="co"># Two empty chair speeches with missing link? - catch that before translating</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> speeches <span class="sc">%&gt;%</span> <span class="fu">filter</span>(characters <span class="sc">&lt;</span> <span class="dv">10</span>)  <span class="co"># 0</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> speeches <span class="sc">%&gt;%</span> <span class="fu">filter</span>(characters <span class="sc">&lt;</span> <span class="dv">50</span>)  <span class="co"># 6844 - looks legit - ELNÖK - note, however, that speaker names are in speech text ...</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(test)</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="fu">gc</span>()</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Translation ####</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">ATTENTION</span><span class="co"> WHEN REPEATING THE LOOP</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>speeches<span class="sc">$</span>lang_Google <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>speeches<span class="sc">$</span>translatedText <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a><span class="co"># # Sample for testing</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="co"># speeches &lt;- speeches %&gt;%</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="co">#   sample_n(size = 10)</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="co"># Re-load partially translated corpus</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>speeches <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"./data/HU_speeches_PLS-Translated_backup.rds"</span>)</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(speeches<span class="sc">$</span>translatedText)) <span class="co"># 37272 </span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a><span class="co"># Cost estimation</span></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> speeches <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(translatedText))</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>characters <span class="ot">&lt;-</span> <span class="fu">sum</span>(test<span class="sc">$</span>characters, <span class="at">na.rm =</span> T)</span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>dollars <span class="ot">&lt;-</span> (characters<span class="sc">/</span><span class="dv">1000000</span>)<span class="sc">*</span><span class="dv">20</span> <span class="co"># 20 Dollars per 1 mio characters</span></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>euros <span class="ot">&lt;-</span> dollars <span class="sc">*</span> <span class="fl">0.94</span> <span class="co"># As of September 25 2023</span></span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>euros <span class="co"># 2562 €</span></span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(test)</span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a><span class="fu">gc</span>()</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a><span class="co"># API translation speech-by-speech (if applicable)</span></span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(i)</span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>pb <span class="ot">&lt;-</span> progress_bar<span class="sc">$</span><span class="fu">new</span>(<span class="at">total =</span> <span class="fu">nrow</span>(speeches)) <span class="co"># Progress</span></span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>j <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(speeches)) {</span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Check if character in sentences</span></span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.na</span>(speeches<span class="sc">$</span>text[i])) {<span class="cf">next</span>}  </span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Check if already translated (in case of abortion in between)</span></span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.na</span>(speeches<span class="sc">$</span>translatedText[i])){<span class="cf">next</span>} </span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Exclude a couple of extraordinary speeches (above API quota) that duplicated several times (affects 370 obs in total, see below)</span></span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(speeches<span class="sc">$</span>speech_id[i] <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"20182022_102_49"</span>, <span class="st">"20182022_176_35"</span>, <span class="st">"20182022_192_33"</span>, <span class="st">"20182022_50_2"</span>)) {<span class="cf">next</span>}</span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Check iteration</span></span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(i)</span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Send current speech to Google API and collect response</span></span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a>  tr <span class="ot">&lt;-</span> <span class="fu">gl_translate</span>(</span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a>    speeches<span class="sc">$</span>text[i],</span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a>    <span class="at">target =</span> <span class="st">"en"</span>,</span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">"text"</span>,</span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a>    <span class="at">source =</span> <span class="st">""</span>, <span class="co"># automatic language detection</span></span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="st">"nmt"</span>)</span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Store API response in speech data</span></span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a>  speeches<span class="sc">$</span>translatedText[i] <span class="ot">&lt;-</span> tr<span class="sc">$</span>translatedText[<span class="dv">1</span>]</span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>  speeches<span class="sc">$</span>lang_Google[i] <span class="ot">&lt;-</span> tr<span class="sc">$</span>detectedSourceLanguage[<span class="dv">1</span>]</span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Update progress</span></span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>  pb<span class="sc">$</span><span class="fu">tick</span>()</span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(speeches<span class="sc">$</span>translatedText)) </span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a><span class="fu">gc</span>()</span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a><span class="co"># Export ####</span></span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(speeches, <span class="st">"./data/HU_speeches_PLS-Translated.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>&nbsp;</p>
+</section>
+<section id="result-1" class="level4">
+<h4 class="anchored" data-anchor-id="result-1">Result</h4>
+<p>The resulting data file contains all data from the original ParlLawSpeech collection of <strong><em>487,877 Hungarian speeches between June 28 1994 and March 10 2022 and their English translations</em></strong> (in <code>translatedText</code>) and the source language detected by the Google API (in <code>lang_Google</code>, all Hungarian except two English, one Polish, and two Slovakian speeches).</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</section>
+</section>
+<section id="api-usage-and-budget-consumption" class="level2">
+<h2 class="anchored" data-anchor-id="api-usage-and-budget-consumption">API usage and budget consumption</h2>
+<p>The figure below documents the number of request sent to the Google Cloud Translation API (as provided in the Google cloud Console on Sept 28, 2023) in the project described here. This includes some small prior tests (a.o. documented <a href="http://htmlpreview.github.io/?https://github.com/ChRauh/OPTED-WP5-Translation/blob/main/EP-languageDetection.html">here</a>) as well as the translations of the two big corpora described in the two preceding sections above.</p>
+<div class="quarto-figure quarto-figure-center" style="border: 2px solid gray;">
+<figure class="figure">
+<p><img src="private/ApiUse.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">API requests as documented in the Google cloud console on Sept. 28, 2023</figcaption>
+</figure>
+</div>
+<p>&nbsp;</p>
+<p>The figure below then documents the budget consumed by these API calls. In total, <em>the machine translations documented here cost 24,894.30€</em>.</p>
+<div class="quarto-figure quarto-figure-center" style="border: 2px solid gray;">
+<figure class="figure">
+<p><img src="private/BudgetUse.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Budget consumption as documented in the Google cloud console on Sept.&nbsp;28, 2023</figcaption>
+</figure>
+</div>
+<p>&nbsp;</p>
+<p>The API-key used for machine translations has been deactivated on Sept.&nbsp;28, 2023.</p>
+<p>&nbsp;</p>
+</section>
+<section id="data-and-further-documentation" class="level2">
+<h2 class="anchored" data-anchor-id="data-and-further-documentation">Data and further documentation</h2>
+<p>The translated text data generated by the approach described here are currently archived at the <a href="https://www.wzb.eu/en/persons/christian-rauh">WZB Berlin Social Science Center</a> and will be publicly released together with the overall ParlLawSpeech collection (scheduled for early 2024).</p>
+<p>The full scripts for the machine translation can be accessed in the corresponding <a href="https://github.com/ChRauh/OPTED-WP5-Translation">GitHub repository</a>.</p>
+<p>For further questions, please contact <a href="http://www.christian-rauh.eu">Christian Rauh</a>.</p>
+<p>&nbsp;</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
